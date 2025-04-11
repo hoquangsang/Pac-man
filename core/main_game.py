@@ -25,6 +25,7 @@ class GameController(object):
         dt = self.clock.tick(30) / 1000.0
         self.pacman.update(dt)
         self.pellets.update(dt)
+        self.checkPelletEvents()
         self.checkEvents()
         self.render()
 
@@ -63,3 +64,12 @@ class GameController(object):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+
+    def checkPelletEvents(self):
+        pellet = self.pacman.eatPellets(self.pellets.pelletList)
+        if pellet:
+            self.pellets.numEaten += 1
+            self.pellets.pelletList.remove(pellet)
+
+    
+    pass

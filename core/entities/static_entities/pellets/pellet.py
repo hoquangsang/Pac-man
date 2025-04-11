@@ -9,7 +9,7 @@ class Pellet(StaticEntity):
         self.position = Vector2(column*TILESIZE, row*TILESIZE)
         self.color = WHITE
         self.radius = int(4 * TILESIZE / 16)
-        # self.collideRadius = int(4 * TILESIZE / 16)
+        self.collideRadius = self.radius
         self.points = 10
         self.visible = True
         

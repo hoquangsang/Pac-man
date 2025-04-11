@@ -12,12 +12,11 @@ class Pacman(object):
         self.color = YELLOW
         self.speed = 100 * TILESIZE/16
         self.radius = 10
+        self.collideRadius = 5
         self.node = node
         self.setPosition()
         self.target = node
 
-    def setPosition(self):
-        self.position = self.node.position.copy()
 
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt
@@ -41,6 +40,10 @@ class Pacman(object):
     def render(self, screen):
         p = self.position.asInt()
         pygame.draw.circle(screen, self.color, p, self.radius)
+    
+    # movement
+    def setPosition(self):
+        self.position = self.node.position.copy()
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -83,3 +86,12 @@ class Pacman(object):
             return node2Self >= node2Target
         return False
     
+    # action
+    def eatPellets(self, pelletList):
+        for pellet in pelletList:
+            d = self.position - pellet.position
+            dSquared = d.magnitudeSquared()
+            rSquared = (pellet.radius+self.collideRadius)**2
+            if dSquared <= rSquared:
+                return pellet
+        return None
