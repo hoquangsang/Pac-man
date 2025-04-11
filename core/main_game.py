@@ -2,7 +2,8 @@ from config import *
 import pygame
 from pygame.locals import *
 from .nodes.node_group import NodeGroup
-from .entities.moving_entities.pacman import Pacman
+from .entities.moving_entities.player.pacman import Pacman
+from .entities.moving_entities.ghosts.ghost import Ghost
 from .entities.static_entities.pellets import *
 
 class GameController(object): 
@@ -24,6 +25,7 @@ class GameController(object):
     def update(self):
         dt = self.clock.tick(30) / 1000.0
         self.pacman.update(dt)
+        self.ghost.update(dt)
         self.pellets.update(dt)
         self.checkPelletEvents()
         self.checkEvents()
@@ -33,6 +35,7 @@ class GameController(object):
         self.screen.blit(self.background, (0, 0))
         self.nodes.render(self.screen)
         self.pellets.render(self.screen)
+        self.ghost.render(self.screen)
         self.pacman.render(self.screen)
         pygame.display.update()
 
@@ -42,6 +45,7 @@ class GameController(object):
         self.nodes.setPortalPair((0,17), (27,17))
         self.pacman = Pacman(self.nodes.getStartTempNode())
         self.pellets = PelletGroup("res/mazes/maze1.txt")
+        self.ghost = Ghost(self.nodes.getStartTempNode())
 
     def setBackground(self):
         self.background = pygame.surface.Surface(SCREENSIZE).convert()

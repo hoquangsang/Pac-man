@@ -1,7 +1,6 @@
 from ..entity import Entity
 from utils.math.vector import Vector2
 from config import *
-from random import randint
 
 class MovingEntity(Entity):
     def __init__(self, node):
@@ -18,26 +17,10 @@ class MovingEntity(Entity):
         self.setPosition()
 
     def render(self, screen):
-        if self.visible:
-            p = self.position.asInt()
-            pygame.draw.circle(screen, self.color, p, self.radius)
+        pass
 
     def update(self, dt):
-        self.position += self.directions[self.direction]*self.speed*dt
-         
-        if self.overshotTarget():
-            self.node = self.target
-            directions = self.validDirections()
-            direction = self.randomDirection(directions)   
-            if not self.disablePortal:
-                if self.node.neighbors[PORTAL] is not None:
-                    self.node = self.node.neighbors[PORTAL]
-            self.target = self.getNewTarget(direction)
-            if self.target is not self.node:
-                self.direction = direction
-            else:
-                self.target = self.getNewTarget(self.direction)
-            self.setPosition()
+        pass
     
     #
     def setPosition(self):
@@ -77,7 +60,3 @@ class MovingEntity(Entity):
             return node2Self >= node2Target
         return False
     
-    #
-    def randomDirection(self, directions):
-        return directions[randint(0, len(directions)-1)]
-
