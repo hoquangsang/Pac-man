@@ -9,8 +9,8 @@ class NodeGroup:
         self.nodesLUT = {}  # Look-up table cho các node
         self.nodeSymbols = ['+', 'P', 'n']
         self.pathSymbols = ['.', '-', '|', 'p']
-        self.homekey = None
         self.loadDataFromFile(level)
+        self.homekey = None
 
     def render(self, screen):
         for node in self.nodesLUT.values():
@@ -101,3 +101,9 @@ class NodeGroup:
             self.nodesLUT[key1].neighbors[PORTAL] = self.nodesLUT[key2]
             self.nodesLUT[key2].neighbors[PORTAL] = self.nodesLUT[key1]
 
+    def connectHomeNodes(self, homekey, otherkey, direction):     
+        key = self.constructKey(*otherkey)
+        self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
+        self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
+
+            
