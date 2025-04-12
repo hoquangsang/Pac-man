@@ -17,13 +17,20 @@ class MovingEntity(Entity):
         self.setSpeed(100)
         # self.setPosition()
         self.setStartNode(node)
-
-    def render(self, screen):
-        pass
-
+    
     def update(self, dt):
         pass
-    
+
+    def render(self, screen):
+        if self.visible:
+            if self.image is not None:
+                adjust = Vector2(TILESIZE, TILESIZE) / 2
+                p = self.position - adjust
+                screen.blit(self.image, p.asTuple())
+            else:
+                p = self.position.asInt()
+                pygame.draw.circle(screen, self.color, p, self.radius)
+                
     #
     def setStartNode(self, node):
         self.node = node

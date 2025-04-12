@@ -3,6 +3,7 @@ from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
 from ..moving_entity import MovingEntity
+from core.sprites.pacman_sprites import PacmanSprites
 
 class Pacman(MovingEntity):
     def __init__(self, node):
@@ -11,6 +12,7 @@ class Pacman(MovingEntity):
         self.position = Vector2()
         self.color = YELLOW
         self.direction = LEFT
+        self.sprites = PacmanSprites(self)
 
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt
@@ -31,10 +33,6 @@ class Pacman(MovingEntity):
             if self.oppositeDirection(direction):
                 self.reverseDirection()
         
-    def render(self, screen):
-        p = self.position.asInt()
-        pygame.draw.circle(screen, self.color, p, self.radius)
-    
     # movement
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()

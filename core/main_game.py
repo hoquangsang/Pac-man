@@ -6,6 +6,7 @@ from .entities.moving_entities.player.pacman import Pacman
 from .entities.moving_entities.ghosts.ghost import Ghost
 from .entities.static_entities.pellets import *
 from .entities import Ghost, GhostGroup, Inky, Pinky, Clyde, Blinky
+from .sprites.maze_sprite import MazeSprites 
 
 class GameController(object): 
     def __init__(self, mode=1):
@@ -22,6 +23,7 @@ class GameController(object):
         self.running = True
         self.pellets = None
         # self.setMode(mode)
+        self.level = 1
 
     def update(self):
         dt = self.clock.tick(FPS) / 1000.0
@@ -36,7 +38,7 @@ class GameController(object):
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
-        self.nodes.render(self.screen)
+        # self.nodes.render(self.screen)
         self.pellets.render(self.screen)
         # self.ghost.render(self.screen)
         self.ghosts.render(self.screen)
@@ -45,6 +47,8 @@ class GameController(object):
 
     def startGame(self):
         self.setBackground()
+        self.mazesprites = MazeSprites("res/mazes/maze1.txt","res/mazes/maze1_rotation.txt")
+        self.background = self.mazesprites.constructBackground(self.background, self.level%5)
         self.nodes = Graph("res/mazes/maze1.txt")
         self.nodes.setPortalPair((0,17), (27,17))
 

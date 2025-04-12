@@ -8,12 +8,15 @@ class Pellet(StaticEntity):
         self.name = PELLET
         self.position = Vector2(column*TILESIZE, row*TILESIZE)
         self.color = WHITE
-        self.radius = int(4 * TILESIZE / 16)
-        self.collideRadius = self.radius
+        # self.radius = int(4 * TILESIZE / 16)
+        # self.collideRadius = self.radius
+        self.radius = int(2 * TILESIZE / 16)
+        self.collideRadius = int(2 * TILESIZE / 16)
         self.points = 10
         self.visible = True
         
     def render(self, screen):
         if self.visible:
-            p = self.position.asInt()
-            pygame.draw.circle(screen, self.color, p, self.radius)
+            adjust = Vector2(TILESIZE, TILESIZE) / 2
+            p = self.position + adjust
+            pygame.draw.circle(screen, self.color, p.asInt(), self.radius)

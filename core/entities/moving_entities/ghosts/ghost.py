@@ -34,12 +34,6 @@ class Ghost(MovingEntity):
             else:
                 self.target = self.getNewTarget(self.direction)
             self.setPosition()
-
-    def render(self, screen):
-        if self.visible:
-            p = self.position.asInt()
-            pygame.draw.circle(screen, self.color, p, self.radius)
-
     #
     def validDirections(self):
         directions = []

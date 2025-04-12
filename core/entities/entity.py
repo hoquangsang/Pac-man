@@ -6,6 +6,7 @@ class Entity:
         self.name = None
         self.color = None
         self.visible = True
+        self.image = None
 
     def render(self, screen):
         pass
