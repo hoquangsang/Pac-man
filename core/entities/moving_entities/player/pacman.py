@@ -10,6 +10,7 @@ class Pacman(MovingEntity):
         self.name = PACMAN
         self.position = Vector2()
         self.color = YELLOW
+        self.direction = LEFT
 
     def update(self, dt):
         self.position += self.directions[self.direction]*self.speed*dt

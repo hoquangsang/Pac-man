@@ -9,12 +9,14 @@ class MovingEntity(Entity):
         self.direction = STOP
         self.radius = 10
         self.collideRadius = 5
-        self.node = node
-        self.target = node
+        # self.node = node
+        # self.startNode = None
+        # self.target = node
         self.disablePortal = False
         self.speed = 0
         self.setSpeed(100)
-        self.setPosition()
+        # self.setPosition()
+        self.setStartNode(node)
 
     def render(self, screen):
         pass
@@ -23,6 +25,12 @@ class MovingEntity(Entity):
         pass
     
     #
+    def setStartNode(self, node):
+        self.node = node
+        self.startNode = node
+        self.target = node
+        self.setPosition()
+
     def setPosition(self):
         self.position = self.node.position.copy()
 

@@ -1,4 +1,6 @@
 # Cấu hình màn hình và tile
+FPS = 30
+
 TILESIZE = 16
 NROWS = 36
 NCOLS = 28

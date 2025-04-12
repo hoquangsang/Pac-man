@@ -8,7 +8,7 @@ class GhostGroup(object):
     def __init__(self, node, pacman):
         self.blinky = Blinky(node, pacman)
         self.pinky = Pinky(node, pacman)
-        self.inky = Inky(node, pacman, self.blinky)
+        self.inky = Inky(node, pacman)
         self.clyde = Clyde(node, pacman)
         self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde]
 
@@ -21,11 +21,13 @@ class GhostGroup(object):
 
     def startFreight(self):
         for ghost in self:
-            ghost.startFreight()
+            # ghost.startFreight()
+            pass
         self.resetPoints()
 
     def setSpawnNode(self, node):
         for ghost in self:
+            ghost: Ghost
             ghost.setSpawnNode(node)
 
     def updatePoints(self):
