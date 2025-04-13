@@ -30,8 +30,7 @@ class MovingEntity(Entity):
             else:
                 p = self.position.asInt()
                 pygame.draw.circle(screen, self.color, p, self.radius)
-                
-    #
+
     def setStartNode(self, node):
         self.node = node
         self.startNode = node
@@ -45,7 +44,6 @@ class MovingEntity(Entity):
     def setSpeed(self, speed):
         self.speed = speed * TILESIZE / 16
 
-    # - 
     def validDirection(self, direction):
         if direction is not STOP:
             if self.node.neighbors[direction] is not None:

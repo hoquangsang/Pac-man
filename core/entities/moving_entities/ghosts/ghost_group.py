@@ -10,7 +10,11 @@ class GhostGroup(object):
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)
         self.clyde = Clyde(node, pacman)
-        self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde]
+        # self.blinky = None
+        # self.pinky = None
+        # self.inky = None
+        # self.clyde = None
+        self.ghosts: list[Ghost] = [self.blinky, self.pinky, self.inky, self.clyde]
 
     def __iter__(self):
         return iter(self.ghosts)
@@ -21,13 +25,11 @@ class GhostGroup(object):
 
     def startFreight(self):
         for ghost in self:
-            # ghost.startFreight()
-            pass
+            ghost.startFreight()
         self.resetPoints()
 
     def setSpawnNode(self, node):
         for ghost in self:
-            ghost: Ghost
             ghost.setSpawnNode(node)
 
     def updatePoints(self):
@@ -54,3 +56,4 @@ class GhostGroup(object):
         for ghost in self:
             ghost.render(screen)
 
+    pass

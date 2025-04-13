@@ -18,6 +18,7 @@ DOWN = -1
 LEFT = 2
 RIGHT = -2
 PORTAL = 3
+DEATH = 5
 
 # Định nghĩa thực thể game
 PACMAN = 0
@@ -31,7 +32,8 @@ CLYDE = 7
 FRUIT = 8
 
 # Ghost mode
-SCATTER = 0     # các bóng ma phân tán đến một trong bốn góc của mê cung
+# SCATTER = 0     # các bóng ma phân tán đến một trong bốn góc của mê cung
+SCATTER = 1     # Thực tế là vậy, nhưng game chúng ta không cần tới chế độ này. Nếu muốn, chỉ cần đổi lại thành 0 là được
 CHASE = 1       # lấy vị trí của Pacman làm mục tiêu
 FREIGHT = 2     # khi Pacman ăn Power Pellet, các bóng ma di chuyển ngẫu nhiên và chậm hơn trong mê cung
 SPAWN = 3       # sau khi Pacman ăn

@@ -1,13 +1,14 @@
 from .main_mode import MainMode
+from core.entities import MovingEntity
 from config import *
 
-class ModeController(object):
-    def __init__(self, ghost):
+class GhostModeController(object):
+    def __init__(self, entity: MovingEntity):
         self.timer = 0
         self.time = None
         self.mainmode = MainMode()
         self.current = self.mainmode.mode
-        self.ghost = ghost
+        self.entity = entity 
 
     def update(self, dt):
         self.mainmode.update(dt)
@@ -15,13 +16,13 @@ class ModeController(object):
             self.timer += dt
             if self.timer >= self.time:
                 self.time = None
-                self.ghost.normalMode()
+                self.entity.normalMode()
                 self.current = self.mainmode.mode
         elif self.current in [SCATTER, CHASE]:
             self.current = self.mainmode.mode
         if self.current is SPAWN:
-            if self.ghost.node == self.ghost.spawnNode:
-                self.ghost.normalMode()
+            if self.entity.node == self.entity.spawnNode:
+                self.entity.normalMode()
                 self.current = self.mainmode.mode
                 
     def setSpawnMode(self):

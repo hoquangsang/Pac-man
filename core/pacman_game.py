@@ -2,7 +2,7 @@ from config import *
 import pygame
 import sys
 import os
-from .main_game import GameController
+from .game_controller import GameController
 
 class PacmanGame:
     def __init__(self):
@@ -77,6 +77,5 @@ class PacmanGame:
     def run(self):
         while True:
             mode = self.handle_menu()
-            game_controller = GameController()
-            game_controller.setMode(mode)
+            game_controller = GameController(mode=mode)
             game_controller.run()

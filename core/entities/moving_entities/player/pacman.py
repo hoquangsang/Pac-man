@@ -3,18 +3,19 @@ from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
 from ..moving_entity import MovingEntity
-from core.sprites.pacman_sprites import PacmanSprites
+from core.ui.sprites.pacman_sprites import PacmanSprites
 
 class Pacman(MovingEntity):
     def __init__(self, node):
         super().__init__(node)
         self.name = PACMAN
-        self.position = Vector2()
         self.color = YELLOW
         self.direction = LEFT
         self.sprites = PacmanSprites(self)
+        self.alive = True
 
     def update(self, dt):
+        self.sprites.update(dt)
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
         if self.overshotTarget():
@@ -64,4 +65,15 @@ class Pacman(MovingEntity):
             return True
         return False
 
+    # def reset(self):
+    #     MovingEntity.reset(self)
+    #     self.direction = LEFT
+    #     # self.setBetweenNodes(LEFT)
+    #     self.alive = True
+    #     self.image = self.sprites.getStartImage()
+    #     self.sprites.reset()
+
+    # def die(self):
+    #     self.alive = False
+    #     self.direction = STOP
     pass

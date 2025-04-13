@@ -4,7 +4,8 @@ from utils.math.vector import Vector2
 from config import *
 from ..moving_entity import MovingEntity
 from random import randint
-# from .modes.mode_controller import ModeController
+from .modes.mode_controller import ModeController
+from core.ui.sprites.ghost_sprites import GhostSprites
 
 class Ghost(MovingEntity):
     def __init__(self, node, pacman=None):
@@ -12,19 +13,27 @@ class Ghost(MovingEntity):
         self.name = GHOST
         self.points = 200
         self.color = WHITE
-        self.goal = Vector2()
-        # self.directionMethod = self.randomDirection
-        self.directionMethod = self.goalDirection
+        self.goal = Vector2() #pacman.position
+        self.directionMethod: function = self.goalDirection
         self.pacman = pacman
-        # self.mode = ModeController(self)
+        self.mode = ModeController(self)
+        self.sprites: GhostSprites = None
 
     def update(self, dt):
+        self.mode.update(dt)
+        if self.mode.current is CHASE:
+            self.chase()
+        elif self.mode.current is SCATTER:
+            self.scatter()
+
+        self.sprites.update(dt)
+
+        ###
         self.position += self.directions[self.direction]*self.speed*dt
-         
         if self.overshotTarget():
             self.node = self.target
             directions = self.validDirections()
-            direction = self.directionMethod(directions)  
+            direction = self.directionMethod(directions)
             if not self.disablePortal:
                 if self.node.neighbors[PORTAL] is not None:
                     self.node = self.node.neighbors[PORTAL]
@@ -34,6 +43,7 @@ class Ghost(MovingEntity):
             else:
                 self.target = self.getNewTarget(self.direction)
             self.setPosition()
+    
     #
     def validDirections(self):
         directions = []
@@ -49,7 +59,6 @@ class Ghost(MovingEntity):
         return directions[randint(0, len(directions)-1)]
     
     def goalDirection(self, directions):
-        # pass
         distances = []
         for direction in directions:
             vec = self.node.position  + self.directions[direction]*TILESIZE - self.goal
@@ -58,8 +67,32 @@ class Ghost(MovingEntity):
         return directions[index]
     
     ###
+    def scatter(self):
+        self.goal = Vector2()
+        # self.goal = self.pacman.position
+
+    def chase(self):
+        self.goal = self.pacman.position  
+
     def spawn(self):
         self.goal = self.spawnNode.position
 
     def setSpawnNode(self, node):
         self.spawnNode = node
+    
+    def startSpawn(self):
+        self.mode.setSpawnMode()
+        if self.mode.current == SPAWN:
+            self.setSpeed(150)
+            self.directionMethod = self.goalDirection
+            self.spawn()
+
+    def startFreight(self):
+        self.mode.setFreightMode()
+        if self.mode.current == FREIGHT:
+            self.setSpeed(50)
+            self.directionMethod = self.randomDirection         
+
+    def normalMode(self):
+        self.setSpeed(100)
+        self.directionMethod = self.goalDirection

@@ -1,8 +1,8 @@
 from .ghost import Ghost
-from config import *
+# from ..player.pacman import Pacman
+from config import BLINKY, RED
 from utils.algos.a_star import astar_path
-from core.sprites.ghost_sprites import GhostSprites
-
+from core.ui.sprites.ghost_sprites import GhostSprites
 
 class Blinky(Ghost): # Red ghost
     def __init__(self, node, pacman=None):
@@ -10,6 +10,7 @@ class Blinky(Ghost): # Red ghost
         self.name = BLINKY
         self.color = RED
         self.sprites = GhostSprites(self)
+        # self.goal = self.pacman.position
         pass
 
     # def goalDirection(self, directions):

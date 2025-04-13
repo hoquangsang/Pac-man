@@ -7,6 +7,7 @@ class Entity:
         self.color = None
         self.visible = True
         self.image = None
+        self.sprites = None
 
     def render(self, screen):
         pass
@@ -15,6 +16,9 @@ class Entity:
         pass
 
     def setPosition(self):
+        pass
+
+    def reset(self):
         pass
 
     pass
