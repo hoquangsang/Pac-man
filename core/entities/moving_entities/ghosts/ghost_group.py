@@ -57,3 +57,21 @@ class GhostGroup(object):
             ghost.render(screen)
 
     pass
+    # def addBlinky(self, node, pacman):
+    #     self.blinky = Blinky(node, pacman)
+    #     self.ghosts.append(self.blinky)
+        
+    # def addPinky(self, node, pacman):
+    #     self.pinky = Pinky(node, pacman)
+    #     self.ghosts.append(self.pinky)
+    
+    # def addInky(self, node, pacman):
+    #     self.inky = Inky(node, pacman)
+    #     self.ghosts.append(self.inky)
+
+    # def addClyde(self, node, pacman):
+    #     self.clyde = Clyde(node, pacman)
+    #     self.ghosts.append(self.clyde)
+
+    # def clear(self):
+    #     self.ghosts.clear()

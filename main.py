@@ -1,5 +1,5 @@
-from core.pacman_game import PacmanGame
+from core.game_controller import GameController
 
 if __name__ == "__main__":
-    game = PacmanGame()
+    game = GameController()
     game.run()

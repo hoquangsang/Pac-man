@@ -39,9 +39,9 @@ FREIGHT = 2     # khi Pacman ăn Power Pellet, các bóng ma di chuyển ngẫu 
 SPAWN = 3       # sau khi Pacman ăn
 
 # Option
-MODE_BLUE_GHOST = 1
-MODE_PINK_GHOST = 2
-MODE_ORANGE_GHOST = 3
-MODE_RED_GHOST = 4
-MODE_ALL_GHOST = 5
-MODE_PLAY = 6
+MODE_BLUE_GHOST = 0
+MODE_PINK_GHOST = 1
+MODE_ORANGE_GHOST = 2
+MODE_RED_GHOST = 3
+MODE_ALL_GHOST = 4
+MODE_PLAY = 5

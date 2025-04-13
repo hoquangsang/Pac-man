@@ -5,7 +5,7 @@ pygame.font.init()
 FONT_NAME = "Arial"
 
 # Font tiêu đề
-TITLE_FONT      = pygame.font.SysFont(FONT_NAME, 60, bold=True)
+TITLE_FONT      = pygame.font.SysFont(FONT_NAME, 80, bold=True)
 SUBTITLE_FONT   = pygame.font.SysFont(FONT_NAME, 36, bold=True)
 
 # Font cho các option
