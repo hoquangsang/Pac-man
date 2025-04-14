@@ -64,14 +64,14 @@ class Pacman(MovingEntity):
         if dSquared <= rSquared:
             return True
         return False
-
-    # def reset(self):
-    #     MovingEntity.reset(self)
-    #     self.direction = LEFT
+    
+    def reset(self):
+        MovingEntity.reset(self)
+        self.direction = LEFT
     #     # self.setBetweenNodes(LEFT)
-    #     self.alive = True
-    #     self.image = self.sprites.getStartImage()
-    #     self.sprites.reset()
+        self.alive = True
+        # self.image = self.sprites.getStartImage()
+        # self.sprites.reset()
 
     # def die(self):
     #     self.alive = False

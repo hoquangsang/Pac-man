@@ -1,5 +1,6 @@
 from ..entity import Entity
 from utils.math.vector import Vector2
+from core.mazes.nodes.node import Node
 from config import *
 
 class MovingEntity(Entity):
@@ -31,7 +32,13 @@ class MovingEntity(Entity):
                 p = self.position.asInt()
                 pygame.draw.circle(screen, self.color, p, self.radius)
 
-    def setStartNode(self, node):
+    def reset(self):
+        self.setStartNode(self.startNode)
+        self.direction = STOP
+        self.speed = 100
+        self.visible = True
+
+    def setStartNode(self, node: Node):
         self.node = node
         self.startNode = node
         self.target = node
@@ -39,6 +46,7 @@ class MovingEntity(Entity):
 
     def setPosition(self):
         self.position = self.node.position.copy()
+    
 
     # Movement
     def setSpeed(self, speed):
@@ -46,8 +54,9 @@ class MovingEntity(Entity):
 
     def validDirection(self, direction):
         if direction is not STOP:
-            if self.node.neighbors[direction] is not None:
-                return True
+            if self.name in self.node.access[direction]:
+                if self.node.neighbors[direction] is not None:
+                    return True
         return False
        
     def reverseDirection(self):

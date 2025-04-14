@@ -18,6 +18,7 @@ class Ghost(MovingEntity):
         self.pacman = pacman
         self.mode = ModeController(self)
         self.sprites: GhostSprites = None
+        self.homeNode = node
 
     def update(self, dt):
         self.mode.update(dt)
@@ -44,6 +45,11 @@ class Ghost(MovingEntity):
                 self.target = self.getNewTarget(self.direction)
             self.setPosition()
     
+    def reset(self):
+        MovingEntity.reset(self)
+        self.points = 200
+        self.directionMethod = self.goalDirection
+
     #
     def validDirections(self):
         directions = []
@@ -96,3 +102,4 @@ class Ghost(MovingEntity):
     def normalMode(self):
         self.setSpeed(100)
         self.directionMethod = self.goalDirection
+        self.homeNode.denyAccess(DOWN, self)

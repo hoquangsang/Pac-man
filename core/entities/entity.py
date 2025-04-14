@@ -21,4 +21,10 @@ class Entity:
     def reset(self):
         pass
 
+    def show(self):
+        self.visible = True
+    
+    def hide(self):
+        self.visible = False
+
     pass

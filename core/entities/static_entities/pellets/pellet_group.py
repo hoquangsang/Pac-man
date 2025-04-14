@@ -1,11 +1,11 @@
 from .pellet import Pellet
-from .power_pellet import PowerPellet
+from .powerpellet import PowerPellet
 import numpy as np
 
 class PelletGroup(object):
     def __init__(self, pelletfile):
-        self.pelletList = []
-        self.powerpellets = []
+        self.pelletList: list[Pellet] = []
+        self.powerpellets: list[PowerPellet] = []
         self.createPelletList(pelletfile)
         self.numEaten = 0
 
@@ -28,10 +28,21 @@ class PelletGroup(object):
         return np.loadtxt(textfile, dtype='<U1')
     
     def isEmpty(self):
-        if len(self.pelletList) == 0:
-            return True
-        return False
+        return self.numEaten == len(self.pelletList)
     
     def render(self, screen):
         for pellet in self.pelletList:
             pellet.render(screen)
+
+    def reset(self):
+        for pellet in self.pelletList:
+            pellet.reset()
+
+    def show(self):
+        for pellet in self.pelletList:
+            pellet.show()
+    
+    def hide(self):
+        # return
+        for pellet in self.pelletList:
+            pellet.hide()

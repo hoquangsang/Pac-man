@@ -21,16 +21,29 @@ class GhostGroup(object):
 
     def update(self, dt):
         for ghost in self:
-            ghost.update(dt)
+            if ghost.visible:
+                ghost.update(dt)
+    
+    def render(self, screen):
+        for ghost in self:
+            if ghost.visible:
+                ghost.render(screen)
 
     def startFreight(self):
         for ghost in self:
-            ghost.startFreight()
+            if ghost.visible:
+                ghost.startFreight()
         self.resetPoints()
+
+    def startSpawn(self):
+        for ghost in self:
+            if ghost.visible:
+                ghost.startSpawn()
 
     def setSpawnNode(self, node):
         for ghost in self:
-            ghost.setSpawnNode(node)
+            if ghost.visible:
+                ghost.setSpawnNode(node)
 
     def updatePoints(self):
         for ghost in self:
@@ -46,15 +59,11 @@ class GhostGroup(object):
 
     def hide(self):
         for ghost in self:
-            ghost.visible = False
+            ghost.hide()
 
     def show(self):
         for ghost in self:
-            ghost.visible = True
-
-    def render(self, screen):
-        for ghost in self:
-            ghost.render(screen)
+            ghost.show()
 
     pass
     # def addBlinky(self, node, pacman):
