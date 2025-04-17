@@ -89,8 +89,7 @@ class Maze:
         return None
     
     def getStartTempNode(self):
-        nodes = list(self.nodesLUT.values())
-        return nodes[0]
+        return next(iter(self.nodesLUT.values()), None)
     
     def setPortalPair(self, pair1, pair2):
         key1 = self.constructKey(*pair1)
@@ -104,36 +103,3 @@ class Maze:
         self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
         self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
 
-            
-    def denyAccess(self, col, row, direction, entity):
-        node = self.getNodeFromTiles(col, row)
-        if node is not None:
-            node.denyAccess(direction, entity)
-
-    def allowAccess(self, col, row, direction, entity):
-        node = self.getNodeFromTiles(col, row)
-        if node is not None:
-            node.allowAccess(direction, entity)
-
-    def denyAccessList(self, col, row, direction, entities):
-        for entity in entities:
-            self.denyAccess(col, row, direction, entity)
-
-    def allowAccessList(self, col, row, direction, entities):
-        for entity in entities:
-            self.allowAccess(col, row, direction, entity)
-
-    def denyHomeAccess(self, entity):
-        self.nodesLUT[self.homekey].denyAccess(DOWN, entity)
-
-    def allowHomeAccess(self, entity):
-        self.nodesLUT[self.homekey].allowAccess(DOWN, entity)
-
-    def denyHomeAccessList(self, entities):
-        for entity in entities:
-            self.denyHomeAccess(entity)
-
-    def allowHomeAccessList(self, entities):
-        for entity in entities:
-            self.allowHomeAccess(entity)
-    pass

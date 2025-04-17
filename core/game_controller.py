@@ -80,8 +80,9 @@ class GameController(object):
         self.setMode()
 
     def endGame(self):
-        self.running = False
-        self.pacman.die()
+        # self.running = False
+        # self.pacman.die()
+        pass
         # self.pause.paused = True
     # def resetLevel(self):
     #     self.pause.paused = True
@@ -109,19 +110,6 @@ class GameController(object):
         self.ghosts.inky.setStartNode(self.maze.getNodeFromTiles(0+11.5, 3+14))
         self.ghosts.clyde.setStartNode(self.maze.getNodeFromTiles(4+11.5, 3+14))
         
-        self.maze.denyHomeAccess(self.pacman)
-        self.maze.denyHomeAccessList(self.ghosts)
-        self.maze.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
-        self.maze.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts)
-        # if self.mode == MODE_PLAY:
-        # self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
-        # self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
-        self.maze.denyAccessList(12, 14, UP, self.ghosts)
-        self.maze.denyAccessList(15, 14, UP, self.ghosts)
-        self.maze.denyAccessList(12, 26, UP, self.ghosts)
-        self.maze.denyAccessList(15, 26, UP, self.ghosts)
-
-    ##############
     def checkEvents(self):
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -135,14 +123,12 @@ class GameController(object):
                     self.running = False
                     self.pause.paused = False
 
-
     def checkGhostEvents(self):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
                 ghost.hide()
                 if self.pacman.alive:
                     self.pause.setPause(pauseTime=3, func=self.endGame())
-                    self.running = False
     
     def showMenu(self):
         bg_path = os.path.join("res", "images", "menubg.jpg")
