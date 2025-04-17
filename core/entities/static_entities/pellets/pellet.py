@@ -10,7 +10,7 @@ class Pellet(StaticEntity):
         self.position = Vector2(column*TILESIZE, row*TILESIZE)
         self.color = WHITE
         self.radius = int(2 * TILESIZE / 16)
-        self.collideRadius = int(2 * TILESIZE / 16)
+        self.collideRadius = int(TILESIZE / 16)
         self.points = 10
         
     def render(self, screen):
@@ -21,3 +21,4 @@ class Pellet(StaticEntity):
 
     def reset(self):
         self.show()
+        self.points = 10

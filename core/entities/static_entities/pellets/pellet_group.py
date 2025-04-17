@@ -11,7 +11,8 @@ class PelletGroup(object):
 
     def update(self, dt):
         for powerpellet in self.powerpellets:
-            powerpellet.update(dt)
+            # if powerpellet.active:
+                powerpellet.update(dt)
                 
     def createPelletList(self, pelletfile):
         data = self.readPelletfile(pelletfile)        
@@ -38,11 +39,18 @@ class PelletGroup(object):
         for pellet in self.pelletList:
             pellet.reset()
 
+    # def enable(self):
+    #     for pellet in self.pelletList:
+    #         pellet.enable()
+    
+    # def disable(self):
+    #     for pellet in self.pelletList:
+    #         pellet.disable()
+
     def show(self):
         for pellet in self.pelletList:
             pellet.show()
     
     def hide(self):
-        # return
         for pellet in self.pelletList:
             pellet.hide()

@@ -10,10 +10,6 @@ class GhostGroup(object):
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)
         self.clyde = Clyde(node, pacman)
-        # self.blinky = None
-        # self.pinky = None
-        # self.inky = None
-        # self.clyde = None
         self.ghosts: list[Ghost] = [self.blinky, self.pinky, self.inky, self.clyde]
 
     def __iter__(self):
@@ -60,10 +56,18 @@ class GhostGroup(object):
     def hide(self):
         for ghost in self:
             ghost.hide()
-
+    
     def show(self):
         for ghost in self:
             ghost.show()
+
+    # def enable(self):
+    #     for ghost in self:
+    #         ghost.enable()
+    
+    # def disable(self):
+    #     for ghost in self:
+    #         ghost.disable()
 
     pass
     # def addBlinky(self, node, pacman):

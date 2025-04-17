@@ -4,6 +4,8 @@ from utils.math.vector import Vector2
 from config import *
 from ..moving_entity import MovingEntity
 from core.ui.sprites.pacman_sprites import PacmanSprites
+from core.entities.static_entities.pellets.pellet import Pellet
+from core.entities.moving_entities.ghosts.ghost import Ghost
 
 class Pacman(MovingEntity):
     def __init__(self, node):
@@ -16,6 +18,9 @@ class Pacman(MovingEntity):
 
     def update(self, dt):
         self.sprites.update(dt)
+        
+        if not self.visible: return
+
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
         if self.overshotTarget():
@@ -34,6 +39,16 @@ class Pacman(MovingEntity):
             if self.oppositeDirection(direction):
                 self.reverseDirection()
         
+           
+    def reverseDirection(self):
+        self.direction *= -1
+        self.node, self.target = self.target, self.node
+
+    def oppositeDirection(self, direction):
+        if direction is not STOP:
+            return direction == -self.direction
+        return False
+
     # movement
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -48,14 +63,17 @@ class Pacman(MovingEntity):
         return STOP
 
     # action
-    def eatPellets(self, pelletList):
+    def eatPellets(self, pelletList:list[Pellet]):
         for pellet in pelletList:
-            if self.collideCheck(pellet):
-                return pellet
+            if pellet.visible:
+                if self.collideCheck(pellet):
+                    return pellet
         return None
     
-    def collideGhost(self, ghost):
-        return self.collideCheck(ghost)
+    def collideGhost(self, ghost: Ghost):
+        if ghost.visible:
+            return self.collideCheck(ghost)
+        return False
     
     def collideCheck(self, other):
         d = self.position - other.position
@@ -69,11 +87,11 @@ class Pacman(MovingEntity):
         MovingEntity.reset(self)
         self.direction = LEFT
     #     # self.setBetweenNodes(LEFT)
+        self.image = self.sprites.getStartImage()
+        self.sprites.reset()
         self.alive = True
-        # self.image = self.sprites.getStartImage()
-        # self.sprites.reset()
 
-    # def die(self):
-    #     self.alive = False
-    #     self.direction = STOP
+    def die(self):
+        self.alive = False
+        self.direction = STOP
     pass

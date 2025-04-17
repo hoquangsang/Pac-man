@@ -1,6 +1,6 @@
 from ..entity import Entity
 from utils.math.vector import Vector2
-from core.mazes.nodes.node import Node
+from core.mazes.node import MazeNode
 from config import *
 
 class MovingEntity(Entity):
@@ -10,13 +10,9 @@ class MovingEntity(Entity):
         self.direction = STOP
         self.radius = 10
         self.collideRadius = 5
-        # self.node = node
-        # self.startNode = None
-        # self.target = node
         self.disablePortal = False
         self.speed = 0
         self.setSpeed(100)
-        # self.setPosition()
         self.setStartNode(node)
     
     def update(self, dt):
@@ -37,8 +33,9 @@ class MovingEntity(Entity):
         self.direction = STOP
         self.speed = 100
         self.visible = True
+        # self.active = True
 
-    def setStartNode(self, node: Node):
+    def setStartNode(self, node: MazeNode):
         self.node = node
         self.startNode = node
         self.target = node
@@ -58,16 +55,7 @@ class MovingEntity(Entity):
                 if self.node.neighbors[direction] is not None:
                     return True
         return False
-       
-    def reverseDirection(self):
-        self.direction *= -1
-        self.node, self.target = self.target, self.node
 
-    def oppositeDirection(self, direction):
-        if direction is not STOP:
-            return direction == -self.direction
-        return False
-    
     def getNewTarget(self, direction):
         if self.validDirection(direction):
             return self.node.neighbors[direction]

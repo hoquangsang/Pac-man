@@ -1,10 +1,12 @@
 from config import *
 from utils.math.vector import Vector2
+from utils.datastructure.node import Node
 
-class Node:
-    def __init__(self,x,y):
-        self.position = Vector2(x,y)
-        self.neighbors = {dir: None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
+class MazeNode(Node):
+    def __init__(self,x=0,y=0):
+        super().__init__(x,y)
+        # self.position = Vector2(x,y)
+        self.neighbors: dict[int, Node|None] = {dir:None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
 
         entities = [PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT]
         self.access = {direction: entities[:] for direction in [UP, DOWN, LEFT, RIGHT]}

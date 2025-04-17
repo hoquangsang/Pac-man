@@ -21,6 +21,7 @@ class Ghost(MovingEntity):
         self.homeNode = node
 
     def update(self, dt):
+        if not self.visible: return
         self.mode.update(dt)
         if self.mode.current is CHASE:
             self.chase()
@@ -29,7 +30,6 @@ class Ghost(MovingEntity):
 
         self.sprites.update(dt)
 
-        ###
         self.position += self.directions[self.direction]*self.speed*dt
         if self.overshotTarget():
             self.node = self.target

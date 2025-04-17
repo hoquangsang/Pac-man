@@ -1,6 +1,5 @@
 from .pellet import Pellet
-from config import POWERPELLET, TILESIZE
-
+from config import POWERPELLET, TILESIZE, WHITE, BLACK
 
 class PowerPellet(Pellet):
     def __init__(self, row, column):
@@ -14,5 +13,9 @@ class PowerPellet(Pellet):
     def update(self, dt):
         self.timer += dt
         if self.timer >= self.flashTime:
-            self.visible = not self.visible
             self.timer = 0
+            self.visible = not self.visible
+            # if self.color == WHITE:
+            #     self.color = BLACK
+            # else:
+            #     self.color = WHITE

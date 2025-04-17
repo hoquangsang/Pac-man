@@ -5,9 +5,10 @@ class Entity:
         self.position = Vector2()
         self.name = None
         self.color = None
-        self.visible = True
         self.image = None
         self.sprites = None
+        self.visible = True
+        # self.active = True
 
     def render(self, screen):
         pass
@@ -27,4 +28,9 @@ class Entity:
     def hide(self):
         self.visible = False
 
+    # def enable(self):
+    #     self.active = True
+    
+    # def disable(self):
+    #     self.active = False
     pass
