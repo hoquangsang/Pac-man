@@ -17,10 +17,9 @@ class Pacman(Entity):
 
     def update(self, dt):
         if not self.visible: return
+        if not self.moveable: return
         
         self.sprites.update(dt)
-
-        if not self.moveable: return
 
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()

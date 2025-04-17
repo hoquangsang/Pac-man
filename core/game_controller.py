@@ -46,11 +46,14 @@ class GameController(object):
         if not self.pause.paused:
             self.ghosts.update(dt)
             self.checkGhostEvents()
-            if self.pacman.alive:
-                self.pacman.update(dt)
-        else:
+
+            self.pacman.update(dt)
+        
+        if not self.pacman.alive:
             self.pacman.sprites.update(dt)
         
+        # if self.pacman.alive:
+
         afterPauseMethod = self.pause.update(dt)
         if afterPauseMethod is not None:
             afterPauseMethod()
