@@ -1,11 +1,9 @@
 from .entity import Entity
-from .static_entities.static_entity import StaticEntity
-
-from .moving_entities.moving_entity import MovingEntity
-from .moving_entities.pacmans.pacman import Pacman
-from .moving_entities.ghosts.ghost import Ghost
-from .moving_entities.ghosts.inky import Inky
-from .moving_entities.ghosts.pinky import Pinky
-from .moving_entities.ghosts.blinky import Blinky
-from .moving_entities.ghosts.clyde import Clyde
-# from .moving_entities.ghosts.ghost_group import GhostGroup
+from .entity import Entity
+from .pacmans.pacman import Pacman
+from .ghosts.ghost import Ghost
+from .ghosts.inky import Inky
+from .ghosts.pinky import Pinky
+from .ghosts.blinky import Blinky
+from .ghosts.clyde import Clyde
+from .ghosts.ghost_group import GhostGroup

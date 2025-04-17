@@ -18,23 +18,11 @@ class GhostSprites(Spritesheet):
 
     def update(self, dt):
         x = self.x[self.ghost.name]
-        if self.ghost.mode.current in [SCATTER, CHASE]:
-            if self.ghost.direction == LEFT:
-                self.ghost.image = self.getImage(x, 8)
-            elif self.ghost.direction == RIGHT:
-                self.ghost.image = self.getImage(x, 10)
-            elif self.ghost.direction == DOWN:
-                self.ghost.image = self.getImage(x, 6)
-            elif self.ghost.direction == UP:
-                self.ghost.image = self.getImage(x, 4)
-        elif self.ghost.mode.current == FREIGHT:
-            self.ghost.image = self.getImage(10, 4)
-        elif self.ghost.mode.current == SPAWN:
-            if self.ghost.direction == LEFT:
-                self.ghost.image = self.getImage(8, 8)
-            elif self.ghost.direction == RIGHT:
-                self.ghost.image = self.getImage(8, 10)
-            elif self.ghost.direction == DOWN:
-                self.ghost.image = self.getImage(8, 6)
-            elif self.ghost.direction == UP:
-               self.ghost.image = self.getImage(8, 4)
+        if self.ghost.direction == LEFT:
+            self.ghost.image = self.getImage(x, 8)
+        elif self.ghost.direction == RIGHT:
+            self.ghost.image = self.getImage(x, 10)
+        elif self.ghost.direction == DOWN:
+            self.ghost.image = self.getImage(x, 6)
+        elif self.ghost.direction == UP:
+            self.ghost.image = self.getImage(x, 4)

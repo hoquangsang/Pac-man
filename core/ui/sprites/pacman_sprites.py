@@ -1,6 +1,5 @@
 from .spritesheet import Spritesheet
 from config import *
-# from ..entities.entity import Entity
 from core.ui.animation.animator import Animator
 
 class PacmanSprites(Spritesheet):

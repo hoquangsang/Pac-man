@@ -11,8 +11,3 @@ class Clyde(Ghost): # Orange ghost
         self.color = ORANGE
         self.sprites = GhostSprites(self)
         pass
-
-    # def goalDirection(self, directions):
-    #     pass
-    def scatter(self):
-        self.goal = Vector2(0, TILESIZE*NROWS)

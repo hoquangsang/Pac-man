@@ -10,8 +10,4 @@ class Blinky(Ghost): # Red ghost
         self.name = BLINKY
         self.color = RED
         self.sprites = GhostSprites(self)
-        # self.goal = self.pacman.position
         pass
-
-    # def goalDirection(self, directions):
-    #     pass

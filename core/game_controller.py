@@ -4,14 +4,13 @@ from pygame.locals import *
 import sys
 import os
 from core.mazes.maze import Maze, MazeNode
-from .entities.moving_entities.pacmans.pacman import Pacman
-from .entities.static_entities.pellets import *
-from .entities.moving_entities.ghosts.ghost import Ghost
-from .entities.moving_entities.ghosts.ghost_group import GhostGroup
-from .entities.moving_entities.ghosts.inky import Inky
-from .entities.moving_entities.ghosts.pinky import Pinky
-from .entities.moving_entities.ghosts.clyde import Clyde
-from .entities.moving_entities.ghosts.blinky import Blinky
+from .entities.pacmans.pacman import Pacman
+from .entities.ghosts.ghost import Ghost
+from .entities.ghosts.ghost_group import GhostGroup
+from .entities.ghosts.inky import Inky
+from .entities.ghosts.pinky import Pinky
+from .entities.ghosts.clyde import Clyde
+from .entities.ghosts.blinky import Blinky
 from .ui.sprites.maze_sprite import MazeSprites 
 from .ui.pauser.pause import Pause
 
@@ -27,7 +26,6 @@ class GameController(object):
         self.maze = None #Graph("res/mazes/maze1.txt")
         self.mode = MODE_PLAY-5# mode
         self.running = True
-        self.pellets = None
         self.level = 0
         self.lives = 5
         self.options = [
@@ -47,8 +45,6 @@ class GameController(object):
 
         if not self.pause.paused:
             self.ghosts.update(dt)
-            self.pellets.update(dt)
-            self.checkPelletEvents()
             self.checkGhostEvents()
             if self.pacman.alive:
                 self.pacman.update(dt)
@@ -65,11 +61,9 @@ class GameController(object):
     def render(self):
         self.screen.blit(self.background, (0, 0))
 
-        if self.mode is MODE_PLAY:
-            self.pellets.render(self.screen)
         self.ghosts.render(self.screen)
         self.pacman.render(self.screen)
-        # self.maze.render(self.screen)
+        self.maze.render(self.screen)
         pygame.display.update()
 
 
@@ -106,15 +100,12 @@ class GameController(object):
         self.maze.connectHomeNodes(homekey, (15,14), RIGHT)
 
         self.pacman = Pacman(self.maze.getNodeFromTiles(15, 26))
-        self.pellets = PelletGroup("res/mazes/maze1.txt")
         self.ghosts = GhostGroup(self.maze.getStartTempNode(), self.pacman)
         self.ghosts.blinky.setStartNode(self.maze.getNodeFromTiles(2+11.5, 0+14))
         self.ghosts.pinky.setStartNode(self.maze.getNodeFromTiles(2+11.5, 3+14))
         self.ghosts.inky.setStartNode(self.maze.getNodeFromTiles(0+11.5, 3+14))
         self.ghosts.clyde.setStartNode(self.maze.getNodeFromTiles(4+11.5, 3+14))
         
-        self.ghosts.setSpawnNode(self.maze.getNodeFromTiles(2+11.5, 3+14))
-
         self.maze.denyHomeAccess(self.pacman)
         self.maze.denyHomeAccessList(self.ghosts)
         self.maze.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
@@ -141,39 +132,14 @@ class GameController(object):
                     self.running = False
                     self.pause.paused = False
 
-    def checkPelletEvents(self):
-        pellet: Pellet = self.pacman.eatPellets(self.pellets.pelletList)
-        if pellet:
-            pellet.hide()
-            self.pellets.numEaten += 1
-            if self.mode == MODE_PLAY:
-                if self.pellets.numEaten == 30:
-                    self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
-                if self.pellets.numEaten == 70:
-                    self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
-            if pellet.name == POWERPELLET:
-                self.ghosts.startFreight()
 
     def checkGhostEvents(self):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
-                if ghost.mode.current is FREIGHT:
-                    ghost.hide()
-                    # self.pause.setPause(pauseTime=1, func=lambda: ghost.show())
-                    from functools import partial
-                    self.pause.setPause(pauseTime=1, func=partial(ghost.show))
-                    self.maze.allowHomeAccess(ghost)
-                    ghost.startSpawn()
-                elif ghost.mode.current is not SPAWN:
-                    if self.pacman.alive:
-                        self.lives -=  1
-                        self.pause.setPause(pauseTime=3, func=self.endGame())
-                        # self.ghosts.disable()
-                        self.running = False
-                        # if self.lives > 0:
-                        #     self.pause.setPause(pauseTime=3, func=self.resetLevel)
-                        # else:
-                        #     self.pause.setPause(pauseTime=3, func=self.restartGame)
+                ghost.hide()
+                if self.pacman.alive:
+                    self.pause.setPause(pauseTime=3, func=self.endGame())
+                    self.running = False
     
     def showMenu(self):
         bg_path = os.path.join("res", "images", "menubg.jpg")
@@ -226,36 +192,29 @@ class GameController(object):
 
     def setMode(self):
         if self.mode is MODE_BLUE_GHOST:
-            self.pellets.hide()
             self.ghosts.hide()
             self.ghosts.inky.reset()
-            self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
-            self.pacman.direction = STOP
+            self.pacman.disableMovement()
         elif self.mode is MODE_PINK_GHOST:
-            self.pellets.hide()
             self.ghosts.hide()
             self.ghosts.pinky.reset()
-            self.pacman.direction = STOP
+            self.pacman.disableMovement()
         elif self.mode is MODE_ORANGE_GHOST:
-            self.pellets.hide()
             self.ghosts.hide()
             self.ghosts.clyde.reset()
-            self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
-            self.pacman.direction = STOP
+            self.pacman.disableMovement()
         elif self.mode is MODE_RED_GHOST:
-            self.pellets.hide()
             self.ghosts.hide()
             self.ghosts.blinky.reset()
-            self.pacman.direction = STOP
+            self.pacman.disableMovement()
         elif self.mode is MODE_ALL_GHOST:
-            self.pellets.hide()
             self.ghosts.reset()
-            self.pacman.direction = STOP
+            self.pacman.disableMovement()
         else:
             self.ghosts.reset()
-            self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
-            self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
-            self.pellets.reset()
+            self.pacman.enableMovement()
+            # self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
+            # self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
     
     def run(self):
         while True:
@@ -268,10 +227,8 @@ class GameController(object):
     # def showEntities(self):
     #     self.pacman.show()
     #     self.ghosts.show()
-    #     self.pellets.show()
 
     # def hideEntities(self):
     #     self.pacman.hide()
     #     self.ghosts.hide()
-    #     self.pellets.hide()
     pass

@@ -13,11 +13,13 @@ class MazeNode(Node):
         
     def render(self, screen):       
         for neighbor in self.neighbors.values():
+            adjust = Vector2(TILESIZE, TILESIZE) / 2
             if neighbor:
-                line_start = self.position.asTuple()
-                line_end = neighbor.position.asTuple()
+                line_start = (self.position+adjust).asTuple()
+                line_end = (neighbor.position+adjust).asTuple()
                 pygame.draw.line(screen, WHITE, line_start, line_end, PATHSIZE)
-            pygame.draw.circle(screen, RED, self.position.asInt(), NODESIZE)
+
+            pygame.draw.circle(screen, RED, (self.position+adjust).asInt(), NODESIZE)
         
     def denyAccess(self, direction, entity):
         if entity.name in self.access[direction]:
