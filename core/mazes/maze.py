@@ -3,7 +3,6 @@ from .node import MazeNode
 from config import TILESIZE, UP, DOWN, LEFT, RIGHT, PORTAL, WHITE, RED, PATHSIZE, NODESIZE
 import numpy as np
 import heapq
-from utils.datastructure.graph import Graph
 
 class Maze:
     def __init__(self, dataPath):

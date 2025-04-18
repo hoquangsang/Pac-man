@@ -1,12 +1,10 @@
-from utils.math.distance import euclidean_distance
 from utils.math.vector import Vector2
 from utils.datastructure.node import Node
-from utils.datastructure.graph import Graph
 from collections import deque
 import tracemalloc
 
 # def bfs_path(start_node, goal_node): ...
-def bfs_tree(start: Node, goal: Node) -> Graph:
+def bfs_search_tree(start: Node, goal: Node):
     queue = deque([start])
     came_from: dict[Node, Node] = {start: None}
 
@@ -14,23 +12,40 @@ def bfs_tree(start: Node, goal: Node) -> Graph:
         current: Node = queue.popleft()
 
         if current == goal:
+            return came_from
+        
+        for neighbor in current.neighbors.values():
+            if neighbor is not None and neighbor not in came_from:
+                queue.append(neighbor)
+                came_from[neighbor] = current
+
+
+def bfs_path(start: Node, goal: Node, nextGoal:Node=None):
+    tracemalloc.start()
+    queue = deque([start])
+    came_from: dict[Node, Node] = {start: None}
+    path: list[Node] = []
+
+    current: Node = None
+    while queue:
+        current: Node = queue.popleft()
+
+        if current is goal:
+            while current is not None:
+                path.append(current)
+                current = came_from[current]
+            path.reverse()
             break
         
         for neighbor in current.neighbors.values():
             if neighbor is not None and neighbor not in came_from:
                 queue.append(neighbor)
                 came_from[neighbor] = current
-    
-    return came_from
 
-def bfs_path(start: Node, goal: Node) -> list[Node]:
-    search_tree = bfs_tree(start, goal)
-    # if search_tree:pass
-    path = []
-    current = goal
-    while current is not None:
-        path.append(current)
-        current = search_tree[current]
+    if path and nextGoal and nextGoal is not goal: # Trường hợp Pacman k nằm trên node
+        path.append(nextGoal)
     
-    path.reverse()
-    return path
+    _, peakMem = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
+    return path, peakMem, len(came_from)

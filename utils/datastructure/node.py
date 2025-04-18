@@ -4,7 +4,7 @@ from config import *
 class Node:
     def __init__(self,x=0,y=0):
         self.position = Vector2(x,y)
-        self.neighbors = {}
+        self.neighbors: dict[int, Node|None] = {dir:None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
 
 #####
 # def getNearestNodeByDistance(nodes, target_position):

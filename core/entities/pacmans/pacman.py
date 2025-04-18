@@ -4,7 +4,6 @@ from utils.math.vector import Vector2
 from config import *
 from ..entity import Entity
 from core.ui.sprites.pacman_sprites import PacmanSprites
-from ..ghosts.ghost import Ghost
 
 class Pacman(Entity):
     def __init__(self, node):
@@ -24,31 +23,21 @@ class Pacman(Entity):
         self.position += self.directions[self.direction]*self.speed*dt
         direction = self.getValidKey()
         if self.overshotTarget():
-            self.node = self.target
-            if self.node.neighbors[PORTAL] is not None:
-                self.node = self.node.neighbors[PORTAL]
-            self.target = self.getNewTarget(direction)
-            if self.target is not self.node:
+            self.currentNode = self.targetNode
+            if self.currentNode.neighbors[PORTAL] is not None:
+                self.currentNode = self.currentNode.neighbors[PORTAL]
+            self.targetNode = self.getNewTarget(direction)
+            if self.targetNode is not self.currentNode:
                 self.direction = direction
             else:
-                self.target = self.getNewTarget(self.direction)
-                if self.target is self.node:
+                self.targetNode = self.getNewTarget(self.direction)
+                if self.targetNode is self.currentNode:
                     self.direction = STOP
             self.setPosition()
         else: 
             if self.oppositeDirection(direction):
                 self.reverseDirection()
         
-           
-    def reverseDirection(self):
-        self.direction *= -1
-        self.node, self.target = self.target, self.node
-
-    def oppositeDirection(self, direction):
-        if direction is not STOP:
-            return direction == -self.direction
-        return False
-
     # movement
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -63,7 +52,7 @@ class Pacman(Entity):
         return STOP
 
     # action
-    def collideGhost(self, ghost: Ghost):
+    def collideGhost(self, ghost: Entity):
         if ghost.visible:
             return self.collideCheck(ghost)
         return False

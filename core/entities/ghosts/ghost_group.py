@@ -1,3 +1,5 @@
+from core.mazes.node import MazeNode
+from core.entities.entity import Entity
 from .ghost import Ghost
 from .inky import Inky
 from .pinky import Pinky
@@ -5,7 +7,7 @@ from .blinky import Blinky
 from .clyde import Clyde
 
 class GhostGroup(object):
-    def __init__(self, node, pacman):
+    def __init__(self, node:MazeNode, pacman:Entity):
         self.blinky = Blinky(node, pacman)
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)

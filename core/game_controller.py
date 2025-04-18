@@ -21,10 +21,10 @@ class GameController(object):
         self.screen = pygame.display.set_mode(SCREENSIZE, 0, COLOR_DEPTH)
         self.clock = pygame.time.Clock()
         self.background = None
-        self.ghosts = []
+        self.ghosts: GhostGroup
         self.pacman = None
         self.maze = None #Graph("res/mazes/maze1.txt")
-        self.mode = MODE_PLAY-5# mode
+        self.mode = MODE_PLAY# mode
         self.running = True
         self.level = 0
         self.lives = 5
@@ -41,13 +41,13 @@ class GameController(object):
         
 
     def update(self):
-        dt = self.clock.tick(FPS) / 1000.0
+        dt = self.clock.tick(FPS) / 2000.0
 
         if not self.pause.paused:
+            self.pacman.update(dt)
             self.ghosts.update(dt)
             self.checkGhostEvents()
 
-            self.pacman.update(dt)
         
         if not self.pacman.alive:
             self.pacman.sprites.update(dt)
@@ -66,7 +66,7 @@ class GameController(object):
 
         self.ghosts.render(self.screen)
         self.pacman.render(self.screen)
-        self.maze.render(self.screen)
+        # self.maze.render(self.screen)
         pygame.display.update()
 
 
@@ -78,10 +78,15 @@ class GameController(object):
 
         self.pacman.reset()
         self.setMode()
+        # self.ghosts.inky.contructPath()
+        # print(len(self.ghosts.inky.searchTree))
+        # for node in self.ghosts.inky.searchTree:
+        #     node: MazeNode
+        #     node.render(self.screen,BLUE)
+        # pygame.display.update()
 
     def endGame(self):
-        # self.running = False
-        # self.pacman.die()
+        self.running = False
         pass
         # self.pause.paused = True
     # def resetLevel(self):
@@ -120,15 +125,17 @@ class GameController(object):
                     if self.pacman.alive:
                         self.pause.setPause(playerPaused=True)
                 elif event.key == pygame.K_ESCAPE:
-                    self.running = False
-                    self.pause.paused = False
+                    if self.pacman.alive:
+                        self.running = False
+                        self.pause.paused = False
 
     def checkGhostEvents(self):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
-                ghost.hide()
+                # ghost.hide()
                 if self.pacman.alive:
-                    self.pause.setPause(pauseTime=3, func=self.endGame())
+                    self.pacman.die()
+                    self.pause.setPause(pauseTime=3, func=self.endGame)
     
     def showMenu(self):
         bg_path = os.path.join("res", "images", "menubg.jpg")
@@ -180,25 +187,26 @@ class GameController(object):
         pygame.display.flip()
 
     def setMode(self):
-        if self.mode is MODE_BLUE_GHOST:
+        # self.pacman.disableMovement()
+        if self.mode == MODE_BLUE_GHOST:
             self.ghosts.hide()
             self.ghosts.inky.reset()
-            self.pacman.disableMovement()
-        elif self.mode is MODE_PINK_GHOST:
+            # self.pacman.disableMovement()
+        elif self.mode == MODE_PINK_GHOST:
             self.ghosts.hide()
             self.ghosts.pinky.reset()
-            self.pacman.disableMovement()
-        elif self.mode is MODE_ORANGE_GHOST:
+            # self.pacman.disableMovement()
+        elif self.mode == MODE_ORANGE_GHOST:
             self.ghosts.hide()
             self.ghosts.clyde.reset()
-            self.pacman.disableMovement()
-        elif self.mode is MODE_RED_GHOST:
+            # self.pacman.disableMovement()
+        elif self.mode == MODE_RED_GHOST:
             self.ghosts.hide()
             self.ghosts.blinky.reset()
-            self.pacman.disableMovement()
-        elif self.mode is MODE_ALL_GHOST:
+            # self.pacman.disableMovement()
+        elif self.mode == MODE_ALL_GHOST:
             self.ghosts.reset()
-            self.pacman.disableMovement()
+            # self.pacman.disableMovement()
         else:
             self.ghosts.reset()
             self.pacman.enableMovement()

@@ -1,7 +1,7 @@
 from .ghost import Ghost
 from ..pacmans.pacman import Pacman
-from config import PINKY, PINK, TILESIZE, NCOLS
-from utils.algos.dfs import dfs_path, dfs_tree
+from config import *
+from utils.algos.dfs import dfs_path
 from utils.math.vector import Vector2
 from core.ui.sprites.ghost_sprites import GhostSprites
 
@@ -12,3 +12,14 @@ class Pinky(Ghost): # Pink ghost
         self.color = PINK
         self.sprites = GhostSprites(self)
         pass
+
+    def calculatePath(self):
+        self.path.clear()
+        self.path, self.peakMem, self.numExpandNode = dfs_path(
+            self.currentNode,
+            self.goalNode,
+            self.pacman.targetNode
+        )
+        print(f"{self.targetNode.position}; {self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
+        for i in self.path: print(i.position)
+        print("=====================")

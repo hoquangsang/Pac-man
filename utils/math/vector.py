@@ -48,4 +48,4 @@ class Vector2:
         return int(self.x), int(self.y)
 
     def __str__(self):
-        return "<"+str(self.x)+", "+str(self.y)+">"
+        return f"({self.x/16:.1f}, {self.y/16:.1f})"

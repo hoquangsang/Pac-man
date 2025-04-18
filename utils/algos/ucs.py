@@ -1,7 +1,6 @@
 from utils.math.distance import euclidean_distance
 from utils.math.vector import Vector2
 from utils.datastructure.node import Node
-from utils.datastructure.graph import Graph
 import tracemalloc
 import heapq
 
