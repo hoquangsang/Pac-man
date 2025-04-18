@@ -21,6 +21,8 @@ class Pinky(Ghost): # Pink ghost
             goal=self.goalNode,
             nextGoal=self.pacman.targetNode
         )
+        # if len(self.path) <= 1:
+        #     print(1)
     #     print(f"{self.targetNode.position}; {self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
     #     for i in self.path: print(i.position)
     #     print("=====================")

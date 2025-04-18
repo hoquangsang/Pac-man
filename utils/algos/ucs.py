@@ -1,5 +1,6 @@
 from utils.math.vector import Vector2
 from utils.datastructure.node import Node
+from config import PORTAL
 import heapq
 import tracemalloc
 
@@ -28,7 +29,10 @@ def ucs_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
         for neighbor in current.neighbors.values():
             if neighbor is not None:
                 # Tính chi phí từ current đến neighbor
-                new_cost = cost_so_far[current] + (neighbor.position - current.position).magnitudeSquared()
+                if neighbor is current.neighbors[PORTAL]:
+                    new_cost = cost_so_far[current]
+                else:
+                    new_cost = cost_so_far[current] + (neighbor.position - current.position).magnitudeSquared()
                 
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
                     cost_so_far[neighbor] = new_cost

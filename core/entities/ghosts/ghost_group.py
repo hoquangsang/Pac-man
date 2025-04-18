@@ -12,8 +12,8 @@ class GhostGroup(object):
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)
         self.clyde = Clyde(node, pacman)
-        self.ghosts: list[Ghost] = [self.blinky, self.pinky, self.inky, self.clyde]
-
+        self.ghosts: list[Ghost] = [self.inky, self.pinky, self.clyde, self.blinky] # đây cũng là thứ tự ưu tiên luôn
+        
     def __iter__(self):
         return iter(self.ghosts)
 
@@ -21,6 +21,15 @@ class GhostGroup(object):
         for ghost in self:
             if ghost.visible:
                 ghost.update(dt)
+
+        # for ghost in self:
+        #     if not ghost.visible: continue
+        #     for other in self:
+        #         if not other.visible: continue
+        #         if other is not ghost:
+        #             if ghost.targetNode is other.targetNode:
+        #                 ghost.disableMovement()
+                    
     
     def render(self, screen):
         for ghost in self:

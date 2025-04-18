@@ -4,6 +4,7 @@ import tracemalloc
 from itertools import count
 from utils.math.vector import Vector2
 from utils.datastructure.node import Node
+from config import PORTAL
 
 def astar_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
     tracemalloc.start()
@@ -33,7 +34,11 @@ def astar_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
 
         for neighbor in current.neighbors.values():
             if neighbor is not None:
-                new_cost = cost_so_far[current] + (neighbor.position - current.position).magnitudeSquared()
+                if neighbor is current.neighbors[PORTAL]:
+                    new_cost = cost_so_far[current]
+                else:
+                    new_cost = cost_so_far[current] + (neighbor.position - current.position).magnitudeSquared()
+
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
                     cost_so_far[neighbor] = new_cost
                     priority = new_cost + heuristic(neighbor, goal)

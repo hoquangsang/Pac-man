@@ -134,6 +134,7 @@ class GameController(object):
             if self.pacman.collideGhost(ghost):
                 # ghost.hide()
                 if self.pacman.alive:
+                    return
                     self.pacman.die()
                     self.pause.setPause(pauseTime=3, func=self.endGame)
     
@@ -187,7 +188,7 @@ class GameController(object):
         pygame.display.flip()
 
     def setMode(self):
-        self.pacman.disableMovement()
+        # self.pacman.disableMovement()
         if self.mode == MODE_BLUE_GHOST:
             self.ghosts.hide()
             self.ghosts.inky.reset()

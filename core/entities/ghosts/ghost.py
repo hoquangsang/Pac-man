@@ -19,6 +19,7 @@ class Ghost(Entity):
         self.pacman = pacman
         self.goalNode = pacman.currentNode if pacman else None
         self.peakMem = 0
+        # self.disablePortal = True
         self.contructPath()
 
     def update(self, dt):
@@ -26,18 +27,20 @@ class Ghost(Entity):
         self.sprites.update(dt)
 
         # Nếu pacman thay đổi current;target
-        if self.pacman.targetNode != self.goalNode:
-            self.goalNode = self.pacman.currentNode
+        if self.targetLost():
+            # print(0)
             self.contructPath()
 
         self.position += self.directions[self.direction] * self.speed * dt
 
         if self.overshotTarget():
             self.currentNode = self.targetNode
-            if self.currentNode.neighbors[PORTAL] is not None:
-                self.currentNode = self.targetNode = self.currentNode.neighbors[PORTAL]
-                self.targetIdx += 1
-            self.nextStep()
+            if not self.disablePortal: # Tạm thời ??
+                if self.currentNode.neighbors[PORTAL] is not None: # Quá nhanh nên target ?
+                    self.currentNode = self.targetNode = self.currentNode.neighbors[PORTAL]
+                    self.targetIdx += 1
+                    # print(1)
+            self.setNewTarget()
             self.setPosition()
         
     def render(self, screen):
@@ -57,16 +60,23 @@ class Ghost(Entity):
         line_end = (self.position+adjust).asTuple()
         pygame.draw.line(screen, self.color, line_start, line_end, PATHSIZE//2)
 
-        self.renderTree(screen=screen)
-
+    def targetLost(self):
+        # if self.pacman.currentNode is not self.goalNode:
+        #     return True
+        if self.pacman.currentNode is not self.pacman.targetNode: # pacman di chuyển
+            return True
+        return False
+    
     def contructPath(self):
         if not self.pacman:
             return
+        self.goalNode = self.pacman.currentNode
         self.calculatePath()
-        self.targetIdx = 0 if self.startNode is not self.targetNode else -1
-        self.nextStep()
+        self.targetIdx = 0 if self.currentNode is not self.targetNode else -1
+        self.targetNode = self.currentNode
+        self.setNewTarget()
 
-    def nextStep(self):
+    def setNewTarget(self):
         if self.targetIdx + 1 < len(self.path):
             self.targetIdx += 1
             self.targetNode = self.path[self.targetIdx]
@@ -74,17 +84,25 @@ class Ghost(Entity):
             direction = self.getDirection()
             if direction is not PORTAL:
                 self.direction = direction
+            # else:
+            #     if self.disablePortal:
+            #         self.reverseDirection()
+                
+            # if self.name == BLINKY:
+            #     print("========")
+            #     print(f"{self.currentNode.position},{self.position}.{self.targetNode.position}")
+            #     print(f"{self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
+            #     for i in self.path:
+            #         print(i.position, end=";")
+            # if direction is STOP:
         else:
             self.direction = STOP
-            # print(f"{self.name}; {self.targetNode.position}; {self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
-            # for i in self.path:
-            #     print(i.position, end=";")
-            # # print(self.pacman.position)
-            # print("\n=============")
 
     def getDirection(self):
         for key, node in self.currentNode.neighbors.items():
             if node is self.targetNode:
+                # if node.neighbors[PORTAL]:
+                    # return self.direction
                 return key
         return STOP
     #
@@ -93,31 +111,10 @@ class Ghost(Entity):
         self.path, self.peakMem, self.numExpandNode, self.tree = bfs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
-            goal=self.goalNode,
+            goal=self.pacman.currentNode,
             nextGoal=self.pacman.targetNode
         )
-
-    def renderTree(self, screen):
-        pass
-        # if self.tree is None: return
-        
-        # # current = self.tree[self.pacman.targetNode]
-        # cur = self.pacman.startNode
-        # if cur not in self.tree: return
-        # nbr = self.tree[cur]
-        # adjust = Vector2(TILESIZE, TILESIZE) / 2 + Vector2((self.name-GHOST+1) * TILESIZE/8)
-        # while nbr:
-        #     if cur.neighbors[PORTAL] is not nbr:
-        #         line_start = (cur.position+adjust).asTuple()
-        #         line_end = (nbr.position+adjust).asTuple()
-        #         pygame.draw.line(screen, self.color, line_start, line_end, PATHSIZE//2)
-        #     cur = nbr
-        #     nbr = self.tree[nbr]
-
 
     def reset(self):
         super().reset()
         self.contructPath()
-        # self.peakMem = 0
-        # self.currentIdx = 0
-        # if self.path: self.path.clear()
