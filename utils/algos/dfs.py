@@ -4,11 +4,11 @@ from utils.datastructure.node import Node
 import tracemalloc
 from config import PORTAL
 
-def dfs_path(start: Node, goal: Node, nextGoal:Node=None):
+def dfs_path(start:Node, nextStart:Node, goal: Node, nextGoal:Node=None):
     tracemalloc.start()
 
-    stack = [start]
-    came_from: dict[Node, Node] = {start: None}
+    stack = [nextStart]
+    came_from: dict[Node, Node] = {nextStart: None}
     path: list[Node] = []
 
     current: Node = None
@@ -19,6 +19,8 @@ def dfs_path(start: Node, goal: Node, nextGoal:Node=None):
             while current is not None:
                 path.append(current)
                 current = came_from[current]
+            if start and start is not nextStart:
+                path.append(start)
             path.reverse()
             break
         
@@ -33,4 +35,4 @@ def dfs_path(start: Node, goal: Node, nextGoal:Node=None):
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
 
-    return path, peakMem, len(came_from)
+    return path, peakMem, len(came_from), came_from

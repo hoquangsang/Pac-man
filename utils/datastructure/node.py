@@ -6,6 +6,16 @@ class Node:
         self.position = Vector2(x,y)
         self.neighbors: dict[int, Node|None] = {dir:None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
 
+    def getKey(self, position:Vector2):
+        for key, neighbor in self.neighbors.items():
+            if neighbor.position == position:
+                return key
+        return None
+    
+    def __lt__(self, other):
+        return id(self) < id(other)
+
+
 #####
 # def getNearestNodeByDistance(nodes, target_position):
 #     min_node = None

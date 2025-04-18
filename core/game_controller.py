@@ -41,7 +41,7 @@ class GameController(object):
         
 
     def update(self):
-        dt = self.clock.tick(FPS) / 2000.0
+        dt = self.clock.tick(FPS) / 1000.0
 
         if not self.pause.paused:
             self.pacman.update(dt)
@@ -187,31 +187,24 @@ class GameController(object):
         pygame.display.flip()
 
     def setMode(self):
-        # self.pacman.disableMovement()
+        self.pacman.disableMovement()
         if self.mode == MODE_BLUE_GHOST:
             self.ghosts.hide()
             self.ghosts.inky.reset()
-            # self.pacman.disableMovement()
         elif self.mode == MODE_PINK_GHOST:
             self.ghosts.hide()
             self.ghosts.pinky.reset()
-            # self.pacman.disableMovement()
         elif self.mode == MODE_ORANGE_GHOST:
             self.ghosts.hide()
             self.ghosts.clyde.reset()
-            # self.pacman.disableMovement()
         elif self.mode == MODE_RED_GHOST:
             self.ghosts.hide()
             self.ghosts.blinky.reset()
-            # self.pacman.disableMovement()
         elif self.mode == MODE_ALL_GHOST:
             self.ghosts.reset()
-            # self.pacman.disableMovement()
         else:
             self.ghosts.reset()
             self.pacman.enableMovement()
-            # self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
-            # self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
     
     def run(self):
         while True:
