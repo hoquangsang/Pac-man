@@ -3,16 +3,16 @@ import pygame
 from pygame.locals import *
 import sys
 import os
-from core.mazes.maze import Maze, MazeNode
-from .entities.pacmans.pacman import Pacman
-from .entities.ghosts.ghost import Ghost
-from .entities.ghosts.ghost_group import GhostGroup
-from .entities.ghosts.inky import Inky
-from .entities.ghosts.pinky import Pinky
-from .entities.ghosts.clyde import Clyde
-from .entities.ghosts.blinky import Blinky
-from .ui.sprites.maze_sprite import MazeSprites 
-from .ui.pauser.pause import Pause
+from mazes.maze import Maze, MazeNode
+from entities.pacmans.pacman import Pacman
+from entities.ghosts.ghost import Ghost
+from entities.ghosts.ghost_group import GhostGroup
+from entities.ghosts.inky import Inky
+from entities.ghosts.pinky import Pinky
+from entities.ghosts.clyde import Clyde
+from entities.ghosts.blinky import Blinky
+from ui.sprites.maze_sprite import MazeSprites 
+from ui.pauser.pause import Pause
 
 class GameController(object): 
     def __init__(self):
@@ -66,7 +66,7 @@ class GameController(object):
 
         self.ghosts.render(self.screen)
         self.pacman.render(self.screen)
-        # self.maze.render(self.screen)
+        self.maze.render(self.screen)
         pygame.display.update()
 
 

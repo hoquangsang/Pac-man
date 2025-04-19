@@ -3,7 +3,7 @@ from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
 from ..entity import Entity
-from core.ui.sprites.pacman_sprites import PacmanSprites
+from ui.sprites.pacman_sprites import PacmanSprites
 
 class Pacman(Entity):
     def __init__(self, node):

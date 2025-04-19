@@ -1,10 +1,11 @@
 from utils.math.vector import Vector2
 from config import *
+from typing import Optional
 
 class Node:
     def __init__(self,x=0,y=0):
         self.position = Vector2(x,y)
-        self.neighbors: dict[int, Node|None] = {dir:None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
+        self.neighbors: dict[int, Optional[Node]] = {dir:None for dir in [UP, DOWN, LEFT, RIGHT, PORTAL]} # type: ignore
         self.isOccupied = False
 
     def getKey(self, position:Vector2):

@@ -1,31 +1,34 @@
 from .ghost import Ghost
+from ..pacmans.pacman import Pacman
 from config import *
-from utils.algos.bfs import bfs_path
+from utils.algos.dfs import dfs_path
 from utils.math.vector import Vector2
-from core.ui.sprites.ghost_sprites import GhostSprites
-from core.mazes.node import MazeNode
-from core.entities.entity import Entity
+from ui.sprites.ghost_sprites import GhostSprites
 
-
-class Inky(Ghost): # Blue ghost
-    def __init__(self, node, pacman:Entity=None):
+class Pinky(Ghost): # Pink ghost
+    def __init__(self, node, pacman:Pacman=None):
         super().__init__(node,pacman)
-        self.name = INKY
-        self.color = LIGHT_BLUE
+        self.name = PINKY
+        self.color = PINK
         self.sprites = GhostSprites(self)
         pass
 
     def calculatePath(self):
         self.path.clear()
-        self.path, self.peakMem, self.numExpandNode, self.tree = bfs_path(
+        self.path, self.peakMem, self.numExpandNode, self.tree = dfs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
             goal=self.goalNode,
             nextGoal=self.pacman.targetNode
         )
+        # if len(self.path) <= 1:
+        #     print(1)
+    #     print(f"{self.targetNode.position}; {self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
+    #     for i in self.path: print(i.position)
+    #     print("=====================")
 
     # def renderTree(self, screen):
-    #     self.path, self.peakMem, self.numExpandNode, self.tree = bfs_path(
+    #     self.path, self.peakMem, self.numExpandNode, self.tree = dfs_path(
     #         start=None,
     #         nextStart=self.startNode,
     #         goal=self.goalNode,
@@ -34,8 +37,6 @@ class Inky(Ghost): # Blue ghost
 
     #     # if self.tree is None: return
     #     adjust = Vector2(TILESIZE, TILESIZE) / 2 + Vector2((self.name-GHOST+1) * TILESIZE/8)
-
-        
     #     for cur in self.tree:
     #         nbr = self.tree[cur]
     #         if cur.neighbors[PORTAL] is not nbr:

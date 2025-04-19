@@ -1,5 +1,5 @@
-from core.mazes.node import MazeNode
-from core.entities.entity import Entity
+from mazes.node import MazeNode
+from entities.entity import Entity
 from .ghost import Ghost
 from .inky import Inky
 from .pinky import Pinky

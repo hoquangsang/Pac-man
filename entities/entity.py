@@ -1,6 +1,6 @@
 from utils.math.vector import Vector2
-from core.mazes.node import MazeNode
-from core.ui.sprites.spritesheet import Spritesheet
+from mazes.node import MazeNode
+from ui.sprites.spritesheet import Spritesheet
 from config import *
 
 class Entity(object):

@@ -3,8 +3,8 @@ from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
 from ..entity import Entity
-from core.ui.sprites.ghost_sprites import GhostSprites
-from core.mazes.node import MazeNode
+from ui.sprites.ghost_sprites import GhostSprites
+from mazes.node import MazeNode
 from utils.algos.bfs import bfs_path
 
 class Ghost(Entity):
