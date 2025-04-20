@@ -5,7 +5,6 @@ from config import *
 from ..entity import Entity
 from ui.sprites.ghost_sprites import GhostSprites
 from mazes.node import MazeNode
-from utils.algos.bfs import bfs_path
 
 class Ghost(Entity):
     def __init__(self, node, pacman:Entity=None):
@@ -110,16 +109,7 @@ class Ghost(Entity):
         return STOP
     #
     def recalculatePath(self):
-        self.path.clear()
-        self.peakMem = 0
-        self.numExpandNode = 0
-        self.tree = {}
-        self.path, self.peakMem, self.numExpandNode, self.tree = bfs_path(
-            start=self.currentNode,
-            nextStart=self.targetNode,
-            goal=self.pacman.currentNode,
-            nextGoal=self.pacman.targetNode
-        )
+        pass
 
     def reset(self):
         super().reset()

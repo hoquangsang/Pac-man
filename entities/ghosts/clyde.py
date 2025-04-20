@@ -1,11 +1,12 @@
 from .ghost import Ghost
-from utils.algos.ucs import ucs_path
 from config import *
 from ui.sprites.ghost_sprites import GhostSprites
-from utils.math.vector import Vector2
+from entities.entity import Entity
+from mazes.graph import MazeGraph
+from utils.algos.ucs import ucs_path
 
 class Clyde(Ghost): # Orange ghost
-    def __init__(self, node, pacman=None):
+    def __init__(self, node, pacman:Entity=None):
         super().__init__(node, pacman)
         self.name = CLYDE
         self.color = ORANGE
@@ -16,10 +17,10 @@ class Clyde(Ghost): # Orange ghost
         self.path.clear()
         self.peakMem = 0
         self.numExpandNode = 0
-        self.tree = {}
-        self.path, self.peakMem, self.numExpandNode, self.tree = ucs_path(
+        self.path, peakMem, numExpandNode, cameFrom = ucs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
             goal=self.pacman.currentNode,
             nextGoal=self.pacman.targetNode
         )
+        self.searchTree = MazeGraph(cameFrom=cameFrom, expands=numExpandNode,peekMem=peakMem)

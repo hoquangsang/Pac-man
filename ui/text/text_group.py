@@ -26,7 +26,7 @@ class TextGroup(object):
 
         self.alltext[SCORETXT]      = Text("0".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
         self.alltext[MEMORYTXT]     = Text("0MB".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
-        self.alltext[TIMERTXT]      = Text("00:00".zfill(5), WHITE, 23*TILESIZE, 1.1*TILESIZE, size)
+        self.alltext[TIMERTXT]      = Text("00:00".zfill(5), WHITE, 21*TILESIZE, 1.1*TILESIZE, size)
         self.alltext[EXPANDEDTXT]   = Text("0".zfill(3), WHITE, 12.5*TILESIZE, 34.75*TILESIZE, size)
 
     def update(self, dt):
@@ -34,6 +34,32 @@ class TextGroup(object):
             self.alltext[tkey].update(dt)
             if self.alltext[tkey].destroy:
                 self.removeText(tkey)
+
+    def updateText(self, id, value):
+        if id in self.alltext.keys():
+            self.alltext[id].setText(value)
+
+    def updateScore(self, score):
+        self.updateText(SCORETXT, str(score).zfill(8))
+    
+    def updateTime(self, seconds: float):
+        # seconds = miliseconds // 1000
+        minutes = int(seconds) // 60
+        secs = int(seconds) % 60
+        millis = int((seconds - int(seconds)) * 100)
+        formatted_time = f"{minutes}:{secs:02}.{millis:02}"
+        self.updateText(TIMERTXT, formatted_time)
+
+    def updateExpands(self, value):
+        self.updateText(EXPANDEDTXT, str(value).zfill(3))
+
+    def updatePeekMem(self, value):
+        format_mem = f"{str(int(value)).zfill(6)}MB"
+        self.updateText(MEMORYTXT, format_mem)
+
+    def render(self, screen):
+        for tkey in list(self.alltext.keys()):
+            self.alltext[tkey].render(screen)
 
     def showText(self, id):
         self.alltext[id].visible = True
@@ -49,21 +75,3 @@ class TextGroup(object):
     def showNotify(self, id):
         self.hideAllText()
         self.alltext[id].visible = True
-
-    def updateScore(self, score):
-        self.updateText(SCORETXT, str(score).zfill(8))
-
-    def updateText(self, id, value):
-        if id in self.alltext.keys():
-            self.alltext[id].setText(value)
-    
-    def updateTime(self, seconds: float):
-        # seconds = miliseconds // 1000
-        minutes = int(seconds) // 60
-        secs = int(seconds) % 60
-        formatted_time = f"{minutes}:{secs:02}"
-        self.updateText(TIMERTXT, formatted_time)
-
-    def render(self, screen):
-        for tkey in list(self.alltext.keys()):
-            self.alltext[tkey].render(screen)

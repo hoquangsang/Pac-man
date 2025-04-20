@@ -39,11 +39,11 @@ class GameController(object):
             "All Ghosts",
             "Play"
         ]
-        self.pause = Pause(False)
+        self.pause = Pause(True)
         self.score = 0
         self.timer = 0.0
         self.textgroup = TextGroup()
-        self.searchTree: MazeGraph = None
+        # self.searchTree: MazeGraph = None
 
     def update(self):
         dt = self.clock.tick(FPS) / 1000.0
@@ -73,12 +73,17 @@ class GameController(object):
 
         if self.mode < MODEALL:
             self.maze.render(self.screen)
+            if self.searchTree:
+                self.searchTree.render(self.screen)
+                self.textgroup.updateExpands(self.searchTree.numExpandNode)
+                self.textgroup.updatePeekMem(self.searchTree.peekMem)
 
         self.textgroup.render(self.screen)
         pygame.display.update()
 
     def startLevel(self):
         self.running = True
+        self.pause.paused = True
         self.setBackground()
         self.mazesprites = MazeSprites("res/mazes/maze1.txt","res/mazes/maze1_rotation.txt")
         self.background = self.mazesprites.constructBackground(self.background, self.level%5)
@@ -108,8 +113,6 @@ class GameController(object):
         self.maze.connectHomeNodes(homekey, (15,14), RIGHT)
 
         # self.pacman = Pacman(self.maze.getNodeFromTiles(26, 32))
-        # self.pacman = Pacman(self.maze.getNodeFromTiles(27, 17))
-        # self.ghosts.inky.setStartNode(self.maze.getNodeFromTiles(6, 23))
         self.pacman = Pacman(self.maze.getNodeFromTiles(15, 26))
         self.ghosts = GhostGroup(self.maze.getStartTempNode(), self.pacman)
         self.ghosts.blinky.setStartNode(self.maze.getNodeFromTiles(2+11.5, 0+14))
@@ -139,9 +142,8 @@ class GameController(object):
     def checkGhostEvents(self):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
-                # ghost.hide()
+                ghost.hide()
                 if self.pacman.alive:
-                    # return
                     self.pacman.die()
                     self.textgroup.showNotify(GAMEOVERTXT)
                     self.pause.setPause(pauseTime=3, func=self.endGame)
@@ -208,27 +210,36 @@ class GameController(object):
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
         elif self.mode == MODEALL:
-            pass
+            self.textgroup.hideText(SCORETXT)
+            self.textgroup.hideText(MEMORYTXT)
+            self.textgroup.hideText(EXPANDEDTXT)
+            self.pacman.disableMovement()
         else:
             self.textgroup.hideText(SCORETXT)
             self.textgroup.showText(MEMORYTXT)
             self.textgroup.showText(EXPANDEDTXT)
             self.pacman.disableMovement()
+            self.ghosts.hide()
             if self.mode == MODEINKY:
-                self.ghosts.hide()
-                self.ghosts.inky.reset()
+                ghost = self.ghosts.inky
             elif self.mode == MODEPINKY:
-                self.ghosts.hide()
-                self.ghosts.pinky.reset()
+                ghost = self.ghosts.pinky
             elif self.mode == MODECLYDE:
-                self.ghosts.hide()
-                self.ghosts.clyde.reset()
+                ghost = self.ghosts.clyde
             elif self.mode == MODEBLINKY:
-                self.ghosts.hide()
-                self.ghosts.blinky.reset()
-            
+                ghost = self.ghosts.blinky
+
+            if ghost:
+                ghost.reset()
+
         self.ghosts.recontructPath()
-   
+
+        if self.mode < MODEALL:
+            if ghost:
+                self.searchTree = ghost.searchTree
+            else: 
+                self.searchTree = None
+
     def run(self):
         self._startgame()
         while True:
@@ -236,6 +247,6 @@ class GameController(object):
             # self.setMode()
             self.startLevel()
                 
-            while self.running or self.pause.paused:
+            while self.running:
                 self.update()
 
