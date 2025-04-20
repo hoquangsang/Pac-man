@@ -20,6 +20,7 @@ from core.entities.static_entities.pellets.pellet_group import PelletGroup
 from core.ui.sprites.maze_sprite import MazeSprites 
 from core.ui.pauser.pause import Pause
 from core.ui.text.text import Text
+from core.ui.musics.music import Music
 from core.ui.text.text_group import TextGroup
 
 class GameController(object): 
@@ -51,6 +52,7 @@ class GameController(object):
         self.textgroup = TextGroup()
         self.searchTree = None
         self.lives = 5
+        self.musics = Music()
         # self.searchTree: MazeGraph = None
 
     def update(self):
@@ -111,6 +113,10 @@ class GameController(object):
         self.textgroup.updateTime(self.timer)
 
         self.setMode()
+
+        if self.mode == MODEPLAY:
+            # self.musics.play(SOUND_MENU)
+            pass
 
     def endGame(self):
         self.running = False
@@ -177,7 +183,7 @@ class GameController(object):
                 if ghost.mode.current is FREIGHT:
                     self.pacman.hide()
                     ghost.hide()
-                    EATGHOSTMIXER.play()
+                    self.musics.play(SOUND_EATGHOST)
                     self.updateScore(ghost.points)
                     self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
                     self.ghosts.updatePoints()
@@ -188,7 +194,7 @@ class GameController(object):
                 elif ghost.mode.current is not SPAWN:
                     if self.pacman.alive:
                         ghost.hide()
-                        PACMANDEATHMIXER.play()
+                        self.musics.play(SOUND_PACMANDEATH)
                         self.pacman.die()#
                         self.lives -= 1
                         # if self.lives <= 0:
@@ -213,10 +219,10 @@ class GameController(object):
                     # self.ghosts.clyde.direction = LEFT
             pellet.hide()
             if pellet.name == POWERPELLET:
-                EATPOWERPELLETMIXER.play()
+                self.musics.play(SOUND_EATPOWERPELLET)
                 self.ghosts.startFreight()
             else:
-                EATPELLETMIXER.play()
+                self.musics.play(SOUND_EATPELLET)
 
             if self.pellets.isEmpty():
                 self.pause.setPause(pauseTime=3, func=self.nextLevel)
@@ -245,6 +251,7 @@ class GameController(object):
                     elif event.key == pygame.K_DOWN:
                         self.mode = (self.mode + 1) % len(self.options)
                     elif event.key == pygame.K_RETURN:
+                        self.musics.stop()
                         return  # Thoát menu
             self.clock.tick(30)
     
@@ -332,6 +339,7 @@ class GameController(object):
             while self.running:
                 self.update()
                 # self.searchTree = self.ghosts.pinky.searchTree
+            self.musics.stop()
 
     def showEntities(self):
         self.pacman.show()
