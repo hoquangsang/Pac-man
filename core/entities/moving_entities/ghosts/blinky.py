@@ -20,7 +20,7 @@ class Blinky(Ghost): # Red ghost
         self.path, peakMem, numExpandNode, cameFrom = astar_path(
             start=self.currentNode,
             nextStart=self.targetNode,
-            goal=self.pacman.currentNode,
-            nextGoal=self.pacman.targetNode
+            goal=self.goalNode,
+            nextGoal=self.nextGoalNode
         )
         self.searchTree = MazeGraph(cameFrom=cameFrom, expands=numExpandNode,peekMem=peakMem)

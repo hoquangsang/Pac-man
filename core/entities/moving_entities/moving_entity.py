@@ -57,8 +57,9 @@ class MovingEntity(Entity):
 
     def validDirection(self, direction):
         if direction is not STOP:
-            if self.currentNode.neighbors[direction] is not None:
-                return True
+            if self.name in self.currentNode.access[direction]:
+                if self.currentNode.neighbors[direction] is not None:
+                    return True
         return False
 
     def getNewTarget(self, direction):

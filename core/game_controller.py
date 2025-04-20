@@ -49,6 +49,7 @@ class GameController(object):
         self.score = 0
         self.timer = 0.0
         self.textgroup = TextGroup()
+        self.searchTree = None
         # self.searchTree: MazeGraph = None
 
     def update(self):
@@ -96,6 +97,7 @@ class GameController(object):
         self.running = True
         self.pause.paused = True
         self.setBackground()
+        self.pellets.numEaten = 0
         self.mazesprites = MazeSprites("res/mazes/maze1.txt","res/mazes/maze1_rotation.txt")
         self.background = self.mazesprites.constructBackground(self.background, self.level%5)
 
@@ -132,16 +134,20 @@ class GameController(object):
         self.ghosts.inky.setStartNode(self.maze.getNodeFromTiles(0+11.5, 3+14))
         self.ghosts.clyde.setStartNode(self.maze.getNodeFromTiles(4+11.5, 3+14))
         self.ghosts.setSpawnNode(self.maze.getNodeFromTiles(2+11.5, 3+14))
-        
-        self.maze.denyHomeAccess(self.pacman)
-        self.maze.denyHomeAccessList(self.ghosts)
-        self.maze.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
-        self.maze.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts)
+        self.ghosts.blinky.setScatterNode(self.maze.getNodeFromTiles(1, 4))
+        self.ghosts.pinky.setScatterNode(self.maze.getNodeFromTiles(26, 4))
+        self.ghosts.inky.setScatterNode(self.maze.getNodeFromTiles(26, 32))
+        self.ghosts.clyde.setScatterNode(self.maze.getNodeFromTiles(1, 32))
 
-        self.maze.denyAccessList(12, 14, UP, self.ghosts)
-        self.maze.denyAccessList(15, 14, UP, self.ghosts)
-        self.maze.denyAccessList(12, 26, UP, self.ghosts)
-        self.maze.denyAccessList(15, 26, UP, self.ghosts)
+        self.maze.denyHomeAccess(self.pacman)
+        # self.maze.denyHomeAccessList(self.ghosts)
+        # self.maze.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
+        # self.maze.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts)
+
+        # self.maze.denyAccessList(12, 14, UP, self.ghosts)
+        # self.maze.denyAccessList(15, 14, UP, self.ghosts)
+        # self.maze.denyAccessList(12, 26, UP, self.ghosts)
+        # self.maze.denyAccessList(15, 26, UP, self.ghosts)
 
     def checkEvents(self):
         for event in pygame.event.get():
@@ -172,7 +178,7 @@ class GameController(object):
                     from functools import partial
                     self.pause.setPause(pauseTime=1, func=partial(ghost.show))
                     ghost.startSpawn()
-                    self.maze.allowHomeAccess(ghost)
+                    # self.maze.allowHomeAccess(ghost)
                 elif ghost.mode.current is not SPAWN:
                     ghost.hide()
                     if self.pacman.alive:
@@ -186,16 +192,13 @@ class GameController(object):
             pellet.hide()
             self.pellets.numEaten += 1
             self.updateScore(pellet.points)
-            if self.pellets.numEaten == 30:
-                self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
-            elif self.pellets.numEaten == 70:
-                self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
             
             if self.mode == MODEPLAY:
-                if self.pellets.numEaten == 30:
-                    self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
-                if self.pellets.numEaten == 70:
-                    self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
+            #     if self.pellets.numEaten == 30:
+            #         self.ghosts.inky.enableMovement()
+            #     if self.pellets.numEaten == 70:
+            #         self.ghosts.clyde.enableMovement()
+                pass
             
             if pellet.name == POWERPELLET:
                 self.ghosts.startFreight()
@@ -268,8 +271,8 @@ class GameController(object):
             self.textgroup.showText(SCORETXT)
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
-            self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
-            self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
+            self.ghosts.inky.disableMovement()
+            self.ghosts.clyde.disableMovement()
         elif self.mode == MODEALL:
             self.pellets.hide()
             self.textgroup.hideText(SCORETXT)
@@ -285,12 +288,10 @@ class GameController(object):
             self.ghosts.hide()
             if self.mode == MODEINKY:
                 ghost = self.ghosts.inky
-                self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
             elif self.mode == MODEPINKY:
                 ghost = self.ghosts.pinky
             elif self.mode == MODECLYDE:
                 ghost = self.ghosts.clyde
-                self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
             elif self.mode == MODEBLINKY:
                 ghost = self.ghosts.blinky
 
@@ -311,7 +312,6 @@ class GameController(object):
             self.showMenu()
             # self.setMode()
             self.startLevel()
-                
             while self.running:
                 self.update()
 

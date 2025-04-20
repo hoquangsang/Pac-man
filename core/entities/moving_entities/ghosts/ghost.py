@@ -17,12 +17,14 @@ class Ghost(MovingEntity):
         self.path: list[MazeNode] = []
         self.targetIdx: int = 0
         self.pacman = pacman
-        self.nextGoalNode = None
-        self.goalNode = None
+        self.spawnNode: MazeNode = None
+        self.scatterNode: MazeNode = None
+        self.goalNode: MazeNode = self.pacman.currentNode if self.pacman else None
+        self.nextGoalNode: MazeNode = self.pacman.targetNode if self.pacman else None
         self.peakMem = 0
         self.disablePortal = True
         self.mode = ModeController(self)
-        self.homeNode = node
+        self.homeNode: MazeNode = node
         # self.recontructPath()
 
     def update(self, dt):
@@ -47,15 +49,16 @@ class Ghost(MovingEntity):
             self.setPosition()
 
     def targetLost(self):
-        if self.pacman.currentNode is not self.pacman.targetNode: # pacman di chuyển
-            if self.goalNode is not self.pacman.targetNode:
-                return True
+        if self.mode.current == CHASE:
+            if self.pacman.currentNode is not self.pacman.targetNode: # pacman di chuyển
+                if self.goalNode is not self.pacman.targetNode:
+                    return True
         return False
     
     def reconstructPath(self):
-        if not self.pacman: return
+        # if not self.pacman: return
+        # self.goalNode = self.pacman.targetNode
         self.recalculatePath()
-        self.goalNode = self.pacman.targetNode
         if self.currentNode is self.targetNode:
             self.targetIdx = -1  # new target = path[1]
         else:
@@ -81,8 +84,6 @@ class Ghost(MovingEntity):
         else:
             self.direction = STOP
     
-    # def tele(self):
-
     def peekNextNode(self) -> MazeNode | None:
         """Trả về node kế tiếp nếu có"""
         if self.targetIdx + 1 < len(self.path):
@@ -90,46 +91,67 @@ class Ghost(MovingEntity):
         return None
 
     def getDirection(self):
-        for key, node in self.currentNode.neighbors.items():
-            if node is self.targetNode:
-                return key
+        # for key, node in self.currentNode.neighbors.items():
+        #     if node is self.targetNode:
+        #         return key
+        for direction, node in self.currentNode.neighbors.items():
+            if direction == PORTAL:
+                continue
+            if node is self.targetNode and self.validDirection(direction):
+                return direction
         return STOP
     #
     def recalculatePath(self):
         pass
 
     def scatter(self):
-        self.goal = Vector2()
-        # self.goal = self.pacman.position
+        self.goalNode = self.nextGoalNode = self.scatterNode
+        # self.goal = Vector2()
 
     def chase(self):
-        self.goal = self.pacman.position  
+        self.goalNode = self.pacman.currentNode
+        self.nextGoalNode = self.pacman.targetNode
+        # self.goal = self.pacman.position
 
     def spawn(self):
-        self.goal = self.spawnNode.position
+        self.goalNode = self.nextGoalNode = self.spawnNode
+        # self.goal = self.spawnNode.position
 
-    def setSpawnNode(self, node):
+    def freight(self):
+        # self.goalNode = self.nextGoalNode = self.scatterNode
+        pass
+
+    def setSpawnNode(self, node:MazeNode):
         self.spawnNode = node
+    
+    def setScatterNode(self, node:MazeNode):
+        self.scatterNode = node
     
     def startSpawn(self):
         self.mode.setSpawnMode()
         if self.mode.current == SPAWN:
             self.setSpeed(150)
-            # self.directionMethod = self.goalDirection
             self.spawn()
+            self.reconstructPath()
+            # self.directionMethod = self.goalDirection
 
     def startFreight(self):
         self.mode.setFreightMode()
         if self.mode.current == FREIGHT:
             self.setSpeed(50)
+            self.freight()
+            self.reconstructPath()
             # self.directionMethod = self.randomDirection         
 
     def normalMode(self):
         self.setSpeed(100)
         # self.directionMethod = self.goalDirection
-        self.homeNode.denyAccess(DOWN, self)
+        # self.homeNode.denyAccess(DOWN, self)
+        # self.reconstructPath()
 
     def reset(self):
         super().reset()
         self.points = 200
         self.path.clear()
+        self.goalNode = self.pacman.currentNode if self.pacman else None
+        self.nextGoalNode = self.pacman.targetNode if self.pacman else None

@@ -20,7 +20,7 @@ class Clyde(Ghost): # Orange ghost
         self.path, peakMem, numExpandNode, cameFrom = ucs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
-            goal=self.pacman.currentNode,
-            nextGoal=self.pacman.targetNode
+            goal=self.goalNode,
+            nextGoal=self.nextGoalNode
         )
         self.searchTree = MazeGraph(cameFrom=cameFrom, expands=numExpandNode,peekMem=peakMem)

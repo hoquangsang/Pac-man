@@ -21,7 +21,12 @@ class Pinky(Ghost): # Pink ghost
         self.path, peakMem, numExpandNode, cameFrom = dfs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
-            goal=self.pacman.currentNode,
-            nextGoal=self.pacman.targetNode
+            goal=self.goalNode,
+            nextGoal=self.nextGoalNode
         )
+        if not self.path:
+            print("emtpy")
+        if not self.goalNode:
+            print("None")
+            
         self.searchTree = MazeGraph(cameFrom=cameFrom, expands=numExpandNode,peekMem=peakMem)
