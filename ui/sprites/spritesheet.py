@@ -17,3 +17,8 @@ class Spritesheet(object):
         self.sheet.set_clip(pygame.Rect(x, y, width, height))
         return self.sheet.subsurface(self.sheet.get_clip())
 
+    def reset(self):
+        pass
+
+    def getStartImage(self):
+        pass

@@ -1,3 +1,4 @@
+from utils.datastructure.node import Node
 from utils.datastructure.graph import Graph
 
 class MazeGraph(Graph):
@@ -6,3 +7,4 @@ class MazeGraph(Graph):
     
     def render(self, screen):
         pass
+    

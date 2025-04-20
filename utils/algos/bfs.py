@@ -9,7 +9,6 @@ def bfs_path(start:Node, nextStart:Node, goal:Node, nextGoal:Node=None):
     came_from: dict[Node, Node] = {nextStart: None}
     path: list[Node] = []
 
-    current: Node = None
     while queue:
         current: Node = queue.popleft()
 
@@ -29,7 +28,6 @@ def bfs_path(start:Node, nextStart:Node, goal:Node, nextGoal:Node=None):
 
     if path and nextGoal and nextGoal is not goal: # Trường hợp Pacman k nằm trên node
         path.append(nextGoal)
-    
     
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()

@@ -18,23 +18,43 @@ class GhostGroup(object):
         return iter(self.ghosts)
 
     def update(self, dt):
+        # 1. Reset trạng thái moveable
+        for ghost in self:
+            ghost.enableMovement()
+
+        # 2. Duyệt theo thứ tự độ ưu tiên (đã có sẵn trong self.ghosts)
+        nextPositions = {}  # key: node, value: ghost.name
+        for ghost in self:
+            if not ghost.visible:
+                continue
+
+            nextNode = ghost.peekNextNode()
+            if nextNode is None:
+                continue
+
+            if nextNode in nextPositions:
+                # Có ghost khác đi tới node này trước đó
+                otherName = nextPositions[nextNode]
+                if ghost.name > otherName:  # ghost này ưu tiên thấp hơn
+                    ghost.disableMovement()
+            else:
+                nextPositions[nextNode] = ghost.name  # đăng ký bước tới
+
+        # 3. Cập nhật từng ghost (chỉ ghost.moveable mới update)
         for ghost in self:
             if ghost.visible:
                 ghost.update(dt)
-
-        # for ghost in self:
-        #     if not ghost.visible: continue
-        #     for other in self:
-        #         if not other.visible: continue
-        #         if other is not ghost:
-        #             if ghost.targetNode is other.targetNode:
-        #                 ghost.disableMovement()
-                    
+              
     
     def render(self, screen):
         for ghost in self:
             if ghost.visible:
                 ghost.render(screen)
+                
+    def recontructPath(self):
+        for ghost in self:
+            if ghost.visible:
+                ghost.reconstructPath()
 
     def reset(self):
         for ghost in self:

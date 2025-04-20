@@ -4,6 +4,7 @@ from pygame.locals import *
 import sys
 import os
 from mazes.maze import Maze, MazeNode
+from mazes.graph import MazeGraph
 from entities.pacmans.pacman import Pacman
 from entities.ghosts.ghost import Ghost
 from entities.ghosts.ghost_group import GhostGroup
@@ -13,6 +14,8 @@ from entities.ghosts.clyde import Clyde
 from entities.ghosts.blinky import Blinky
 from ui.sprites.maze_sprite import MazeSprites 
 from ui.pauser.pause import Pause
+from ui.text.text import Text
+from ui.text.text_group import TextGroup
 
 class GameController(object): 
     def __init__(self):
@@ -24,7 +27,7 @@ class GameController(object):
         self.ghosts: GhostGroup
         self.pacman = None
         self.maze = None #Graph("res/mazes/maze1.txt")
-        self.mode = MODE_PLAY# mode
+        self.mode = MODEPLAY-5# mode
         self.running = True
         self.level = 0
         self.lives = 5
@@ -36,24 +39,26 @@ class GameController(object):
             "All Ghosts",
             "Play"
         ]
-        self._config()
         self.pause = Pause(False)
-        
+        self.score = 0
+        self.timer = 0.0
+        self.textgroup = TextGroup()
+        self.searchTree: MazeGraph = None
 
     def update(self):
         dt = self.clock.tick(FPS) / 1000.0
+        self.textgroup.update(dt)
 
         if not self.pause.paused:
             self.pacman.update(dt)
             self.ghosts.update(dt)
             self.checkGhostEvents()
-
+            self.timer += dt
+            self.textgroup.updateTime(self.timer)
         
         if not self.pacman.alive:
             self.pacman.sprites.update(dt)
         
-        # if self.pacman.alive:
-
         afterPauseMethod = self.pause.update(dt)
         if afterPauseMethod is not None:
             afterPauseMethod()
@@ -63,51 +68,48 @@ class GameController(object):
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
-
         self.ghosts.render(self.screen)
         self.pacman.render(self.screen)
-        self.maze.render(self.screen)
+
+        if self.mode < MODEALL:
+            self.maze.render(self.screen)
+
+        self.textgroup.render(self.screen)
         pygame.display.update()
 
-
-    def startGame(self):
+    def startLevel(self):
         self.running = True
         self.setBackground()
         self.mazesprites = MazeSprites("res/mazes/maze1.txt","res/mazes/maze1_rotation.txt")
         self.background = self.mazesprites.constructBackground(self.background, self.level%5)
 
-        self.pacman.reset()
+        self.score = 0
+        self.textgroup.updateScore(self.score)
+        self.textgroup.showNotify(READYTXT)
+        self.timer = 0
+        self.textgroup.updateTime(self.timer)
+
         self.setMode()
-        # self.ghosts.inky.contructPath()
-        # print(len(self.ghosts.inky.searchTree))
-        # for node in self.ghosts.inky.searchTree:
-        #     node: MazeNode
-        #     node.render(self.screen,BLUE)
-        # pygame.display.update()
 
     def endGame(self):
         self.running = False
         pass
-        # self.pause.paused = True
-    # def resetLevel(self):
-    #     self.pause.paused = True
-    #     # self.pacman.reset()
-    #     # self.ghosts.reset()
-    #     self.fruit = None
-    #     self.setMode()
 
     def setBackground(self):
         self.background = pygame.surface.Surface(SCREENSIZE).convert()
         self.background.fill(BLACK)
     
     #####
-    def _config(self):
+    def _startgame(self):
         self.maze = Maze("res/mazes/maze1.txt")
         self.maze.setPortalPair((0,17), (27,17))
         homekey = self.maze.createHomeNodes(11.5, 14)
         self.maze.connectHomeNodes(homekey, (12,14), LEFT)
         self.maze.connectHomeNodes(homekey, (15,14), RIGHT)
 
+        # self.pacman = Pacman(self.maze.getNodeFromTiles(26, 32))
+        # self.pacman = Pacman(self.maze.getNodeFromTiles(27, 17))
+        # self.ghosts.inky.setStartNode(self.maze.getNodeFromTiles(6, 23))
         self.pacman = Pacman(self.maze.getNodeFromTiles(15, 26))
         self.ghosts = GhostGroup(self.maze.getStartTempNode(), self.pacman)
         self.ghosts.blinky.setStartNode(self.maze.getNodeFromTiles(2+11.5, 0+14))
@@ -123,20 +125,31 @@ class GameController(object):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     if self.pacman.alive:
+                        # self.pacman.moveable = not self.pacman.moveable
                         self.pause.setPause(playerPaused=True)
+                        if not self.pause.paused:
+                            self.textgroup.hideAllText()
+                        else: 
+                            self.textgroup.showNotify(PAUSETXT)
                 elif event.key == pygame.K_ESCAPE:
-                    if self.pacman.alive:
+                    if not self.pause.paused and self.pacman.alive:
                         self.running = False
-                        self.pause.paused = False
+                        # self.pause.setPause(pauseTime=1,playerPaused=True, func=self.endGame)
 
     def checkGhostEvents(self):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
                 # ghost.hide()
                 if self.pacman.alive:
+                    # return
                     self.pacman.die()
+                    self.textgroup.showNotify(GAMEOVERTXT)
                     self.pause.setPause(pauseTime=3, func=self.endGame)
     
+    def updateScore(self, points):
+        self.score += points
+        self.textgroup.updateScore(self.score)
+
     def showMenu(self):
         bg_path = os.path.join("res", "images", "menubg.jpg")
         self.background = pygame.image.load(bg_path).convert()
@@ -187,38 +200,42 @@ class GameController(object):
         pygame.display.flip()
 
     def setMode(self):
-        self.pacman.disableMovement()
-        if self.mode == MODE_BLUE_GHOST:
-            self.ghosts.hide()
-            self.ghosts.inky.reset()
-        elif self.mode == MODE_PINK_GHOST:
-            self.ghosts.hide()
-            self.ghosts.pinky.reset()
-        elif self.mode == MODE_ORANGE_GHOST:
-            self.ghosts.hide()
-            self.ghosts.clyde.reset()
-        elif self.mode == MODE_RED_GHOST:
-            self.ghosts.hide()
-            self.ghosts.blinky.reset()
-        elif self.mode == MODE_ALL_GHOST:
-            self.ghosts.reset()
+        self.pacman.reset()
+        self.ghosts.reset()
+
+        if self.mode == MODEPLAY:
+            self.textgroup.showText(SCORETXT)
+            self.textgroup.hideText(MEMORYTXT)
+            self.textgroup.hideText(EXPANDEDTXT)
+        elif self.mode == MODEALL:
+            pass
         else:
-            self.ghosts.reset()
-            self.pacman.enableMovement()
-    
+            self.textgroup.hideText(SCORETXT)
+            self.textgroup.showText(MEMORYTXT)
+            self.textgroup.showText(EXPANDEDTXT)
+            self.pacman.disableMovement()
+            if self.mode == MODEINKY:
+                self.ghosts.hide()
+                self.ghosts.inky.reset()
+            elif self.mode == MODEPINKY:
+                self.ghosts.hide()
+                self.ghosts.pinky.reset()
+            elif self.mode == MODECLYDE:
+                self.ghosts.hide()
+                self.ghosts.clyde.reset()
+            elif self.mode == MODEBLINKY:
+                self.ghosts.hide()
+                self.ghosts.blinky.reset()
+            
+        self.ghosts.recontructPath()
+   
     def run(self):
+        self._startgame()
         while True:
             self.showMenu()
             # self.setMode()
-            self.startGame()
+            self.startLevel()
+                
             while self.running or self.pause.paused:
                 self.update()
-    
-    # def showEntities(self):
-    #     self.pacman.show()
-    #     self.ghosts.show()
 
-    # def hideEntities(self):
-    #     self.pacman.hide()
-    #     self.ghosts.hide()
-    pass

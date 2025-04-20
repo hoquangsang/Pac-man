@@ -21,7 +21,7 @@ class Maze:
         self.createNodeTable(data)
         self.connectHorizontally(data)
         self.connectVertically(data)
-        
+            
     def createNodeTable(self, data, xoffset=0, yoffset=0):
         for row in list(range(data.shape[0])):
             for col in list(range(data.shape[1])):
@@ -101,4 +101,3 @@ class Maze:
         key = self.constructKey(*otherkey)
         self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
         self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
-

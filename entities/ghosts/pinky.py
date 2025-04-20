@@ -13,33 +13,14 @@ class Pinky(Ghost): # Pink ghost
         self.sprites = GhostSprites(self)
         pass
 
-    def calculatePath(self):
+    def recalculatePath(self):
         self.path.clear()
+        self.peakMem = 0
+        self.numExpandNode = 0
+        self.tree = {}
         self.path, self.peakMem, self.numExpandNode, self.tree = dfs_path(
             start=self.currentNode,
             nextStart=self.targetNode,
-            goal=self.goalNode,
+            goal=self.pacman.currentNode,
             nextGoal=self.pacman.targetNode
         )
-        # if len(self.path) <= 1:
-        #     print(1)
-    #     print(f"{self.targetNode.position}; {self.pacman.currentNode.position},{self.pacman.position},{self.pacman.targetNode.position}")
-    #     for i in self.path: print(i.position)
-    #     print("=====================")
-
-    # def renderTree(self, screen):
-    #     self.path, self.peakMem, self.numExpandNode, self.tree = dfs_path(
-    #         start=None,
-    #         nextStart=self.startNode,
-    #         goal=self.goalNode,
-    #         nextGoal=None
-    #     )
-
-    #     # if self.tree is None: return
-    #     adjust = Vector2(TILESIZE, TILESIZE) / 2 + Vector2((self.name-GHOST+1) * TILESIZE/8)
-    #     for cur in self.tree:
-    #         nbr = self.tree[cur]
-    #         if cur.neighbors[PORTAL] is not nbr:
-    #             line_start = (cur.position+adjust).asTuple()
-    #             line_end = (nbr.position+adjust).asTuple()
-    #             pygame.draw.line(screen, self.color, line_start, line_end, PATHSIZE//2)
