@@ -1,11 +1,11 @@
-#Dự Án Pac-Man AI
+# Dự Án Pac-Man AI
 Dự án triển khai trò chơi Pac-Man cổ điển với các con ma (ghosts) được điều khiển bằng các thuật toán tìm kiếm AI. Mục tiêu là lập trình các con ma để đuổi theo Pac-Man và phân tích hiệu suất của các thuật toán tìm kiếm.
 
-##Tổng Quan
+## Tổng Quan
 Pac-Man là một trò chơi arcade kinh điển, trong đó người chơi điều khiển nhân vật Pac-Man di chuyển trong mê cung, thu thập các chấm (dots) và tránh các con ma. Dự án này tập trung vào việc lập trình hành vi của các con ma sử dụng các thuật toán tìm kiếm để đuổi theo Pac-Man, đồng thời đánh giá hiệu suất dựa trên các chỉ số như thời gian tìm kiếm, mức sử dụng bộ nhớ và số nút mở rộng.
 
 
-##Tính Năng
+## Tính Năng
 
 - Cơ chế trò chơi Pac-Man cổ điển:
 + Pac-Man di chuyển trong mê cung, thu thập chấm và tránh ma.
@@ -18,37 +18,37 @@ Pac-Man là một trò chơi arcade kinh điển, trong đó người chơi đi�
 + Orange Ghost (Clyde): Uniform-Cost Search (UCS).
 + Red Ghost (Blinky): A* Search (A*).
 
--Các chế độ trò chơi:
-+Chế độ  từng con ma (Single Ghost Mode) -> mỗi con ma sử dụng 1 thuât toán tìm kiếm khác nhau để di chuyển đến +Pac-man.
-+Chế độ tất cả các ma hoạt động đồng thời (All Ghosts Mode).
+- Các chế độ trò chơi:
++ Chế độ  từng con ma (Single Ghost Mode) -> mỗi con ma sử dụng 1 thuât toán tìm kiếm khác nhau để di chuyển đến +Pac-man.
++ Chế độ tất cả các ma hoạt động đồng thời (All Ghosts Mode).
 + Chế độ chơi tương tác (Play Mode) với Pac-Man do người chơi điều khiển.
 
 
-##Cài Đặt
+## Cài Đặt
 
--Sao chép dự án:
+- Sao chép dự án:
 git clone https://github.com/hoquangsang/Pac-man
 
 
--Cài đặt thư viện cần thiết:
+- Cài đặt thư viện cần thiết:
 pip install pygame
 
 
--Chạy chương trình:
+- Chạy chương trình:
 
 Đảm bảo bạn đang ở thư mục gốc của dự án (Pac-man/).
 Chạy lệnh:python main.py
 
 
-##Cách chơi:
+## Cách chơi:
 
--Phím mũi tên: Di chuyển Pac-Man (lên, xuống, trái, phải).
--Phím Space: Tạm dừng trò chơi.
--Phím ESC: Quay lại màn hình chọn trường hợp kiểm tra (trong game) hoặc menu chính (tại màn hình chọn).
--Phím Enter: Chọn tùy chọn trong menu.
+- Phím mũi tên: Di chuyển Pac-Man (lên, xuống, trái, phải).
+- Phím Space: Tạm dừng trò chơi/ bắt đầu chơi.
+- Phím ESC: Quay lại màn hình chọn trường hợp kiểm tra (trong game) hoặc menu chính (tại màn hình chọn).
+- Phím Enter: Chọn tùy chọn trong menu.
 
 
-##Chi Tiết Mê Cung
+## Chi Tiết Mê Cung
 
 Mê cung được định nghĩa trong res/mazes/maze1.txt.
 Các ký hiệu:
