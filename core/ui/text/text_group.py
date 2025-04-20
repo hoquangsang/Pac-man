@@ -25,10 +25,12 @@ class TextGroup(object):
         self.alltext[GAMEOVERTXT]   = Text("GAMEOVER!", YELLOW, 10*TILESIZE, 20*TILESIZE, size, visible=False)
 
         self.alltext[SCORETXT]      = Text("0".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
-        self.alltext[MEMORYTXT]     = Text("0MB".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
-        self.alltext[TIMERTXT]      = Text("00:00".zfill(5), WHITE, 21*TILESIZE, 1.1*TILESIZE, size)
-        self.alltext[EXPANDEDTXT]   = Text("0 NODE".zfill(8), WHITE, 10*TILESIZE, 34.75*TILESIZE, size)
+        self.alltext[SEARCHTIMETEXT]= Text("0ms".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
+        self.alltext[EXPANDEDTXT]   = Text("0node".zfill(8), WHITE, 21*TILESIZE, 1.1*TILESIZE, size)
+        self.alltext[MEMORYTXT]     = Text("0MB".zfill(8), WHITE, 0, 34.75*TILESIZE, size)
 
+
+        
     def update(self, dt):
         for tkey in list(self.alltext.keys()):
             self.alltext[tkey].update(dt)
@@ -42,16 +44,11 @@ class TextGroup(object):
     def updateScore(self, score):
         self.updateText(SCORETXT, str(score).zfill(8))
     
-    def updateTime(self, seconds: float):
-        # seconds = miliseconds // 1000
-        minutes = int(seconds) // 60
-        secs = int(seconds) % 60
-        millis = int((seconds - int(seconds)) * 100)
-        formatted_time = f"{minutes}:{secs:02}.{millis:02}"
-        self.updateText(TIMERTXT, formatted_time)
+    def updateSearchTime(self, miliseconds: float):
+        self.updateText(SEARCHTIMETEXT, f"{miliseconds:.3f}ms")
 
     def updateExpands(self, value):
-        format_txt = f"{str(int(value)).zfill(6)} node"
+        format_txt = f"{str(int(value)).zfill(3)}node"
         self.updateText(EXPANDEDTXT, format_txt)
 
     def updatePeekMem(self, value):

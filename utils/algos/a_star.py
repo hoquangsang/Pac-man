@@ -5,8 +5,10 @@ from itertools import count
 from utils.math.vector import Vector2
 from utils.datastructure.node import Node
 from config import PORTAL
+import time
 
 def astar_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
+    start_time = time.time()
     tracemalloc.start()
     frontier = []
     counter = count()  # Đếm để tie-break nếu f-cost bằng nhau
@@ -50,5 +52,7 @@ def astar_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
 
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    end_time = time.time()
+    search_time = end_time - start_time
 
-    return path, peakMem, len(came_from), came_from
+    return path, peakMem, search_time*1000, came_from

@@ -2,8 +2,10 @@ from utils.math.vector import Vector2
 from utils.datastructure.node import Node
 import tracemalloc
 import random #dfs có thể khiến ghost xảy ra hành vi lạ do pacman di chuyển liên tục
+import time
 
 def dfs_path(start:Node, nextStart:Node, goal: Node, nextGoal:Node=None):
+    start_time = time.time()
     tracemalloc.start()
 
     stack = [nextStart]
@@ -35,5 +37,7 @@ def dfs_path(start:Node, nextStart:Node, goal: Node, nextGoal:Node=None):
     
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    end_time = time.time()
+    search_time = end_time - start_time
 
-    return path, peakMem, len(came_from), came_from
+    return path, peakMem, search_time*1000, came_from

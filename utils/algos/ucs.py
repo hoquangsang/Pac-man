@@ -3,8 +3,10 @@ from utils.datastructure.node import Node
 from config import PORTAL
 import heapq
 import tracemalloc
+import time
 
 def ucs_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
+    start_time = time.time()
     tracemalloc.start()
     
     frontier = []
@@ -44,5 +46,7 @@ def ucs_path(start: Node, nextStart: Node, goal: Node, nextGoal: Node = None):
 
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    end_time = time.time()
+    search_time = end_time - start_time
 
-    return path, peakMem, len(came_from), came_from
+    return path, peakMem, search_time*1000, came_from

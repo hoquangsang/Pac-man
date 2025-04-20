@@ -48,7 +48,6 @@ class GameController(object):
         ]
         self.pause = Pause(True)
         self.score = 0
-        self.timer = 0.0
         self.textgroup = TextGroup()
         self.searchTree = None
         self.lives = 5
@@ -66,8 +65,6 @@ class GameController(object):
             if self.mode == MODEPLAY:
                 self.checkPelletEvents()
             self.checkGhostEvents()
-            self.timer += dt
-            self.textgroup.updateTime(self.timer)
         
         if not self.pacman.alive:
             self.pacman.sprites.update(dt)
@@ -82,12 +79,13 @@ class GameController(object):
     def render(self):
         self.screen.blit(self.background, (0, 0))
 
-        if self.mode <= MODEALL:
+        if self.mode < MODEALL:
             self.maze.render(self.screen)
             if self.searchTree:
                 self.searchTree.render(self.screen)
                 self.textgroup.updateExpands(self.searchTree.numExpandNode)
-                self.textgroup.updatePeekMem(self.searchTree.peekMem)
+                self.textgroup.updatePeekMem(self.searchTree.peakMem)
+                self.textgroup.updateSearchTime(self.searchTree.searchTime)
         if self.mode == MODEPLAY:
             self.pellets.render(self.screen)
         
@@ -103,19 +101,17 @@ class GameController(object):
         self.pause.paused = True
         self.setBackground()
         self.pellets.numEaten = 0
-        self.mazesprites = MazeSprites("res/mazes/maze1.txt","res/mazes/maze1_rotation.txt")
+        self.mazesprites = MazeSprites()
         self.background = self.mazesprites.constructBackground(self.background, self.level%5)
 
         self.score = 0
         self.textgroup.updateScore(self.score)
         self.textgroup.showNotify(READYTXT)
-        self.timer = 0
-        self.textgroup.updateTime(self.timer)
+        self.textgroup.updateSearchTime(0.)
 
         self.setMode()
 
         if self.mode == MODEPLAY:
-            # self.musics.play(SOUND_MENU)
             pass
 
     def endGame(self):
@@ -196,7 +192,7 @@ class GameController(object):
                         ghost.hide()
                         self.musics.play(SOUND_PACMANDEATH)
                         self.pacman.die()#
-                        self.lives -= 1
+                        # self.lives -= 1
                         # if self.lives <= 0:
                         #     self.textgroup.showText(GAMEOVERTXT)
                         #     self.pause.setPause(pauseTime=3, func=self.restartGame)
@@ -293,6 +289,7 @@ class GameController(object):
             self.textgroup.showText(SCORETXT)
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
+            self.textgroup.hideText(SEARCHTIMETEXT)
             self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
             self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
         elif self.mode == MODEALL:
@@ -300,12 +297,14 @@ class GameController(object):
             self.textgroup.hideText(SCORETXT)
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
+            self.textgroup.hideText(SEARCHTIMETEXT)
             self.pacman.disableMovement()
         else:
             self.pellets.hide()
             self.textgroup.hideText(SCORETXT)
             self.textgroup.showText(MEMORYTXT)
             self.textgroup.showText(EXPANDEDTXT)
+            self.textgroup.showText(SEARCHTIMETEXT)
             self.pacman.disableMovement()
             self.ghosts.hide()
             if self.mode == MODEINKY:
@@ -327,8 +326,7 @@ class GameController(object):
         if self.mode < MODEALL:
             if ghost:
                 self.searchTree = ghost.searchTree
-            else: 
-                self.searchTree = None
+                
 
     def run(self):
         self._startgame()

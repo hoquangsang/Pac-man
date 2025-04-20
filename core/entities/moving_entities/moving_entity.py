@@ -50,6 +50,11 @@ class MovingEntity(Entity):
 
     def setPosition(self):
         self.position = self.currentNode.position.copy()
+
+    def setBetweenNodes(self, direction):
+        if self.currentNode.neighbors[direction] is not None:
+            self.targetNode = self.currentNode.neighbors[direction]
+            self.position = (self.currentNode.position + self.targetNode.position) / 2.0
     
     # Movement
     def setSpeed(self, speed):

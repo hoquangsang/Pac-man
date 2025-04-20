@@ -6,14 +6,15 @@ from .node import MazeNode
 from typing import Optional
 
 class MazeGraph(Graph):
-    def __init__(self, cameFrom: dict['Node', Optional['Node']] = None,expands=0,peekMem=0):
+    def __init__(self, cameFrom: dict['Node', Optional['Node']] = None,peakMem=0,searchTime=0):
         super().__init__()
         if cameFrom:
             for node, parent in cameFrom.items():
                 if parent is not None:
                     self.addEdge(MazeEdge((node, parent)))
-        self.numExpandNode = expands
-        self.peekMem = peekMem
+        self.numExpandNode = len(cameFrom)
+        self.searchTime = searchTime
+        self.peakMem = peakMem
 
     def render(self, screen):
         # Render tất cả các đỉnh (nodes)

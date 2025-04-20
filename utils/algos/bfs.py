@@ -2,9 +2,12 @@ from utils.math.vector import Vector2
 from utils.datastructure.node import Node
 from collections import deque
 import tracemalloc
+import time
 
 def bfs_path(start:Node, nextStart:Node, goal:Node, nextGoal:Node=None):
+    start_time = time.time()
     tracemalloc.start()
+
     queue = deque([nextStart])
     came_from: dict[Node, Node] = {nextStart: None}
     path: list[Node] = []
@@ -31,5 +34,7 @@ def bfs_path(start:Node, nextStart:Node, goal:Node, nextGoal:Node=None):
     
     _, peakMem = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    end_time = time.time()
+    search_time = end_time - start_time
 
-    return path, peakMem, len(came_from), came_from
+    return path, peakMem, search_time*1000, came_from

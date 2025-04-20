@@ -11,6 +11,12 @@ class Maze:
         # self.graph = Graph()
         self.nodesLUT: dict[Vector2, MazeNode] = {}
         self.loadData(dataPath)
+        # self.portalPairs = {0:((0, 17), (27, 17))}
+        # self.homeoffset = (11.5, 14)
+        # self.homenodeconnectLeft = (12, 14)
+        # self.homenodeconnectRight = (15, 14)
+        # self.pacmanStart = (15, 26)
+        # self.fruitStart = (9, 20)
 
     def render(self, screen):
         for node in self.nodesLUT.values():

@@ -17,10 +17,10 @@ class Blinky(Ghost): # Red ghost
         self.path.clear()
         self.peakMem = 0
         self.numExpandNode = 0
-        self.path, peakMem, numExpandNode, cameFrom = astar_path(
+        self.path, peakMem, searchTime, cameFrom = astar_path(
             start=self.currentNode,
             nextStart=self.targetNode,
             goal=self.goalNode,
             nextGoal=self.nextGoalNode
         )
-        self.searchTree = MazeGraph(cameFrom=cameFrom, expands=numExpandNode,peekMem=peakMem)
+        self.searchTree = MazeGraph(cameFrom=cameFrom, searchTime=searchTime, peakMem=peakMem)

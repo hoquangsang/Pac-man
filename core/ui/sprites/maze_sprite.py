@@ -3,7 +3,7 @@ from config import *
 import numpy as np
 
 class MazeSprites(Spritesheet):
-    def __init__(self, mazefile, rotfile):
+    def __init__(self, mazefile="res/mazes/maze1.txt", rotfile="res/mazes/maze1_rotation.txt"):
         Spritesheet.__init__(self)
         self.data = self.readMazeFile(mazefile)
         self.rotdata = self.readMazeFile(rotfile)
