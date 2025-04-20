@@ -62,18 +62,14 @@ class Ghost(MovingEntity):
         return False
     
     def reconstructPath(self):
-        # if not self.pacman: return
-        # self.goalNode = self.pacman.targetNode
+        if not self.pacman:return
         self.recalculatePath()
 
+        if not self.path: return
         if self.targetNode is self.path[0]:
             self.targetIdx = -1
         elif self.currentNode is self.path[0]:
             self.targetIdx = 0
-        # if self.currentNode is self.targetNode:
-        #     self.targetIdx = -1  # new target = path[1]
-        # else:
-        #     self.targetIdx = 0 # new target = path[0]
         
         self.stepForward()
 
@@ -104,9 +100,6 @@ class Ghost(MovingEntity):
         return None
 
     def getDirection(self):
-        # for key, node in self.currentNode.neighbors.items():
-        #     if node is self.targetNode:
-        #         return key
         for direction, node in self.currentNode.neighbors.items():
             if direction == PORTAL:
                 continue

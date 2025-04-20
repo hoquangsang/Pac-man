@@ -186,9 +186,8 @@ class GameController(object):
                     # self.maze.allowHomeAccess(ghost)
                 elif ghost.mode.current is not SPAWN:
                     if self.pacman.alive:
-                        return
                         ghost.hide()
-                        self.pacman.die()
+                        self.pacman.die()#
                         self.lives -= 1
                         # if self.lives <= 0:
                         #     self.textgroup.showText(GAMEOVERTXT)
@@ -295,7 +294,7 @@ class GameController(object):
             self.textgroup.hideText(SCORETXT)
             self.textgroup.showText(MEMORYTXT)
             self.textgroup.showText(EXPANDEDTXT)
-            # self.pacman.disableMovement()
+            self.pacman.disableMovement()
             self.ghosts.hide()
             if self.mode == MODEINKY:
                 ghost = self.ghosts.inky
@@ -325,7 +324,7 @@ class GameController(object):
             self.startLevel()
             while self.running:
                 self.update()
-                self.searchTree = self.ghosts.pinky.searchTree
+                # self.searchTree = self.ghosts.pinky.searchTree
 
     def showEntities(self):
         self.pacman.show()

@@ -1,4 +1,4 @@
-# import pygame
+import pygame
 # pygame.SRCALPHA
 
 # ==================== MÀU CƠ BẢN ====================
