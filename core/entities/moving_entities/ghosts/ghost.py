@@ -19,13 +19,15 @@ class Ghost(MovingEntity):
         self.pacman = pacman
         self.spawnNode: MazeNode = None
         self.scatterNode: MazeNode = None
-        self.goalNode: MazeNode = self.pacman.currentNode if self.pacman else None
-        self.nextGoalNode: MazeNode = self.pacman.targetNode if self.pacman else None
+        self.goalNode: MazeNode = None
+        self.nextGoalNode: MazeNode = None
+        self.setGoalNode()
         self.peakMem = 0
         self.disablePortal = False
         self.mode = ModeController(self)
         self.homeNode: MazeNode = node
         # self.recontructPath()
+        self.disablePortal: bool = False
 
     def update(self, dt):
         if not self.visible or not self.moveable: return
@@ -47,6 +49,10 @@ class Ghost(MovingEntity):
             self.currentNode = self.targetNode
             self.stepForward()
             self.setPosition()
+    
+    def setGoalNode(self):
+        self.goalNode = self.pacman.currentNode if self.pacman else None
+        self.nextGoalNode = self.pacman.targetNode if self.pacman else None
 
     def targetLost(self):
         if self.mode.current == CHASE:
@@ -74,13 +80,12 @@ class Ghost(MovingEntity):
     def stepForward(self):
         if not self.disablePortal:
             portalNode = self.currentNode.neighbors[PORTAL]
-            if portalNode and portalNode in self.path:
-                self.targetIdx += 1
-                self.currentNode = self.targetNode = self.currentNode.neighbors[PORTAL]
-        # else:
-            # self.reconstructPath()
-            # return
-
+            if portalNode:
+                nextNode = self.peekNextNode()
+                if portalNode is nextNode:
+                    self.currentNode = self.targetNode = portalNode
+                    self.targetIdx += 1
+                
         newTarget = self.peekNextNode()
         if newTarget:
             self.targetIdx += 1
@@ -161,5 +166,4 @@ class Ghost(MovingEntity):
         super().reset()
         self.points = 200
         self.path.clear()
-        self.goalNode = self.pacman.currentNode if self.pacman else None
-        self.nextGoalNode = self.pacman.targetNode if self.pacman else None
+        self.setGoalNode()
