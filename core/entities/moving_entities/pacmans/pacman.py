@@ -14,7 +14,7 @@ class Pacman(MovingEntity):
         self.direction = LEFT
         self.sprites = PacmanSprites(self)
         self.alive = True
-        self.setBetweenNodes(LEFT)
+        # self.setBetweenNodes(LEFT)
 
     def update(self, dt):
         if not self.visible: return
@@ -80,6 +80,7 @@ class Pacman(MovingEntity):
         self.image = self.sprites.getStartImage()
         self.sprites.reset()
         self.alive = True
+        # self.setBetweenNodes(LEFT)
 
     def die(self):
         self.alive = False

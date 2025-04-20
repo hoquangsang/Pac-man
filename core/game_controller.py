@@ -23,6 +23,8 @@ from core.ui.text.text import Text
 from core.ui.musics.music import Music
 from core.ui.text.text_group import TextGroup
 
+from functools import partial
+
 class GameController(object): 
     def __init__(self):
         pygame.init()
@@ -96,6 +98,8 @@ class GameController(object):
         pygame.display.update()
 
     def startLevel(self):
+        # self.musics.play(SOUND_STARTGAME)
+        # self.pause.setPause(pauseTime=5,func=self.musics.stop)
         self.lives = 5
         self.running = True
         self.pause.paused = True
@@ -111,8 +115,9 @@ class GameController(object):
 
         self.setMode()
 
-        if self.mode == MODEPLAY:
-            pass
+        # if self.mode == MODEPLAY:
+        #     self.pause.setPause(pauseTime=5)
+        #     pass
 
     def endGame(self):
         self.running = False
@@ -146,13 +151,6 @@ class GameController(object):
 
         self.maze.denyHomeAccess(self.pacman)
         # self.maze.denyHomeAccessList(self.ghosts)
-        # self.maze.denyAccessList(2+11.5, 3+14, LEFT, self.ghosts)
-        # self.maze.denyAccessList(2+11.5, 3+14, RIGHT, self.ghosts)
-
-        # self.maze.denyAccessList(12, 14, UP, self.ghosts)
-        # self.maze.denyAccessList(15, 14, UP, self.ghosts)
-        # self.maze.denyAccessList(12, 26, UP, self.ghosts)
-        # self.maze.denyAccessList(15, 26, UP, self.ghosts)
 
     def checkEvents(self):
         for event in pygame.event.get():
@@ -209,10 +207,8 @@ class GameController(object):
             if self.mode == MODEPLAY:
                 if self.pellets.numEaten == 30:
                     self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
-                    # self.ghosts.inky.direction = RIGHT
                 elif self.pellets.numEaten == 70:
                     self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
-                    # self.ghosts.clyde.direction = LEFT
             pellet.hide()
             if pellet.name == POWERPELLET:
                 self.musics.play(SOUND_EATPOWERPELLET)
@@ -292,6 +288,7 @@ class GameController(object):
             self.textgroup.hideText(SEARCHTIMETEXT)
             self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
             self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
+            self.pacman.setBetweenNodes(LEFT)
         elif self.mode == MODEALL:
             self.pellets.hide()
             self.textgroup.hideText(SCORETXT)
@@ -299,6 +296,8 @@ class GameController(object):
             self.textgroup.hideText(EXPANDEDTXT)
             self.textgroup.hideText(SEARCHTIMETEXT)
             self.pacman.disableMovement()
+            self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
+            self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
         else:
             self.pellets.hide()
             self.textgroup.hideText(SCORETXT)
@@ -307,6 +306,7 @@ class GameController(object):
             self.textgroup.showText(SEARCHTIMETEXT)
             self.pacman.disableMovement()
             self.ghosts.hide()
+            ghost = None
             if self.mode == MODEINKY:
                 ghost = self.ghosts.inky
                 self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
