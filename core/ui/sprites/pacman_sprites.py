@@ -1,6 +1,6 @@
-from .spritesheet import Spritesheet
 from config import *
-from ui.animation.animator import Animator
+from .spritesheet import Spritesheet
+from core.ui.animation.animator import Animator
 
 class PacmanSprites(Spritesheet):
     def __init__(self, entity):

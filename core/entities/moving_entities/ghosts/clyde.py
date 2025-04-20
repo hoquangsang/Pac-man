@@ -1,12 +1,12 @@
-from .ghost import Ghost
 from config import *
-from ui.sprites.ghost_sprites import GhostSprites
-from entities.entity import Entity
-from mazes.graph import MazeGraph
+from core.ui.sprites.ghost_sprites import GhostSprites
+from core.entities.moving_entities.moving_entity import MovingEntity
+from core.mazes.graph import MazeGraph
 from utils.algos.ucs import ucs_path
+from .ghost import Ghost
 
 class Clyde(Ghost): # Orange ghost
-    def __init__(self, node, pacman:Entity=None):
+    def __init__(self, node, pacman:MovingEntity=None):
         super().__init__(node, pacman)
         self.name = CLYDE
         self.color = ORANGE

@@ -1,5 +1,5 @@
-from mazes.node import MazeNode
-from entities.entity import Entity
+from core.mazes.node import MazeNode
+from core.entities.moving_entities.moving_entity import MovingEntity
 from .ghost import Ghost
 from .inky import Inky
 from .pinky import Pinky
@@ -7,7 +7,7 @@ from .blinky import Blinky
 from .clyde import Clyde
 
 class GhostGroup(object):
-    def __init__(self, node:MazeNode, pacman:Entity):
+    def __init__(self, node:MazeNode, pacman:MovingEntity):
         self.blinky = Blinky(node, pacman)
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)
@@ -17,6 +17,7 @@ class GhostGroup(object):
     def __iter__(self):
         return iter(self.ghosts)
 
+    ### ui
     def update(self, dt):
         # 1. Reset trạng thái moveable
         for ghost in self:
@@ -45,12 +46,37 @@ class GhostGroup(object):
             if ghost.visible:
                 ghost.update(dt)
               
-    
     def render(self, screen):
         for ghost in self:
             if ghost.visible:
                 ghost.render(screen)
-                
+
+    ### mode
+    def startFreight(self):
+        for ghost in self:
+            if ghost.visible:
+                ghost.startFreight()
+        self.resetPoints()
+
+    def startSpawn(self):
+        for ghost in self:
+            if ghost.visible:
+                ghost.startSpawn()
+
+    def setSpawnNode(self, node):
+        for ghost in self:
+            if ghost.visible:
+                ghost.setSpawnNode(node)
+
+    def updatePoints(self):
+        for ghost in self:
+            ghost.points *= 2
+
+    def resetPoints(self):
+        for ghost in self:
+            ghost.points = 200
+
+    ### data    
     def recontructPath(self):
         for ghost in self:
             if ghost.visible:
@@ -67,5 +93,3 @@ class GhostGroup(object):
     def show(self):
         for ghost in self:
             ghost.show()
-
-    pass

@@ -1,29 +1,25 @@
-from utils.math.vector import Vector2
-from mazes.node import MazeNode
-from ui.sprites.spritesheet import Spritesheet
 from config import *
+from utils.math.vector import Vector2
+from core.mazes.node import MazeNode
+from core.ui.sprites.spritesheet import Spritesheet
+from core.entities.entity import Entity
 
-class Entity(object):
+class MovingEntity(Entity):
     def __init__(self, node):
         super().__init__()
-        self.position = Vector2()
-        self.name = None
-        self.color = None
-        self.image = None
-        self.sprites: Spritesheet = None
-        self.visible: bool = True
         self.directions: dict[int, Vector2] = {STOP:Vector2(), UP:Vector2(0,-1), DOWN:Vector2(0,1), LEFT:Vector2(-1,0), RIGHT:Vector2(1,0), PORTAL:Vector2()}
         self.direction: int = STOP
         self.radius: int = 10
         self.collideRadius: int = 5
         self.disablePortal: bool = False
         self.speed: float = 0
+        self.setSpeed(100)
         self.moveable: bool = True
+
         self.currentNode: MazeNode = None
         self.startNode: MazeNode = None
         self.targetNode: MazeNode = None
         self.setStartNode(node)
-        self.setSpeed(100)
     
     def update(self, dt):
         pass
@@ -55,7 +51,6 @@ class Entity(object):
     def setPosition(self):
         self.position = self.currentNode.position.copy()
     
-
     # Movement
     def setSpeed(self, speed):
         self.speed = speed * TILESIZE / 16
@@ -89,12 +84,7 @@ class Entity(object):
             return direction == -self.direction
         return False
     
-    def show(self):
-        self.visible = True
-    
-    def hide(self):
-        self.visible = False
-
+    #
     def enableMovement(self):
         self.moveable = True
         

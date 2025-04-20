@@ -27,7 +27,7 @@ class TextGroup(object):
         self.alltext[SCORETXT]      = Text("0".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
         self.alltext[MEMORYTXT]     = Text("0MB".zfill(8), WHITE, 0, 1.1*TILESIZE, size)
         self.alltext[TIMERTXT]      = Text("00:00".zfill(5), WHITE, 21*TILESIZE, 1.1*TILESIZE, size)
-        self.alltext[EXPANDEDTXT]   = Text("0".zfill(3), WHITE, 12.5*TILESIZE, 34.75*TILESIZE, size)
+        self.alltext[EXPANDEDTXT]   = Text("0 NODE".zfill(8), WHITE, 10*TILESIZE, 34.75*TILESIZE, size)
 
     def update(self, dt):
         for tkey in list(self.alltext.keys()):
@@ -51,11 +51,12 @@ class TextGroup(object):
         self.updateText(TIMERTXT, formatted_time)
 
     def updateExpands(self, value):
-        self.updateText(EXPANDEDTXT, str(value).zfill(3))
+        format_txt = f"{str(int(value)).zfill(6)} node"
+        self.updateText(EXPANDEDTXT, format_txt)
 
     def updatePeekMem(self, value):
-        format_mem = f"{str(int(value)).zfill(6)}MB"
-        self.updateText(MEMORYTXT, format_mem)
+        format_txt = f"{str(int(value)).zfill(6)}MB"
+        self.updateText(MEMORYTXT, format_txt)
 
     def render(self, screen):
         for tkey in list(self.alltext.keys()):

@@ -2,10 +2,11 @@ import pygame
 from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
-from ..entity import Entity
-from ui.sprites.pacman_sprites import PacmanSprites
+from core.entities.moving_entities.moving_entity import MovingEntity
+from core.ui.sprites.pacman_sprites import PacmanSprites
+from core.entities.static_entities.pellets.pellet import Pellet
 
-class Pacman(Entity):
+class Pacman(MovingEntity):
     def __init__(self, node):
         super().__init__(node)
         self.name = PACMAN
@@ -52,7 +53,14 @@ class Pacman(Entity):
         return STOP
 
     # action
-    def collideGhost(self, ghost: Entity):
+    def eatPellets(self, pelletList:list[Pellet]):
+        for pellet in pelletList:
+            if pellet.visible:
+                if self.collideCheck(pellet):
+                    return pellet
+        return None
+    
+    def collideGhost(self, ghost: MovingEntity):
         if ghost.visible:
             return self.collideCheck(ghost)
         return False
@@ -66,7 +74,7 @@ class Pacman(Entity):
         return False
     
     def reset(self):
-        Entity.reset(self)
+        MovingEntity.reset(self)
         self.direction = LEFT
         self.image = self.sprites.getStartImage()
         self.sprites.reset()

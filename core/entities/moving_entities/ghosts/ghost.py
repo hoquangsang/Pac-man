@@ -2,26 +2,38 @@ import pygame
 from pygame.locals import *
 from utils.math.vector import Vector2
 from config import *
-from ..entity import Entity
-from ui.sprites.ghost_sprites import GhostSprites
-from mazes.node import MazeNode
+from core.entities.moving_entities.moving_entity import MovingEntity
+from core.ui.sprites.ghost_sprites import GhostSprites
+from core.mazes.node import MazeNode
+from .modes.mode_controller import ModeController
 
-class Ghost(Entity):
-    def __init__(self, node, pacman:Entity=None):
+class Ghost(MovingEntity):
+    def __init__(self, node, pacman:MovingEntity=None):
         super().__init__(node)
         self.name = GHOST
+        self.points = 200
         self.color = WHITE
         self.sprites: GhostSprites = None
         self.path: list[MazeNode] = []
         self.targetIdx: int = 0
         self.pacman = pacman
-        self.goalNode = pacman.currentNode if pacman else None
+        self.nextGoalNode = None
+        self.goalNode = None
         self.peakMem = 0
-        # self.disablePortal = True
+        self.disablePortal = True
+        self.mode = ModeController(self)
+        self.homeNode = node
         # self.recontructPath()
 
     def update(self, dt):
         if not self.visible or not self.moveable: return
+
+        self.mode.update(dt)
+        if self.mode.current is CHASE:
+            self.chase()
+        elif self.mode.current is SCATTER:
+            self.scatter()
+
         self.sprites.update(dt)
 
         self.position += self.directions[self.direction] * self.speed * dt
@@ -30,34 +42,9 @@ class Ghost(Entity):
             self.reconstructPath()
 
         if self.overshotTarget():
-            # if self.currentNode.neighbors[PORTAL] is not None:
-            #     if not self.disablePortal:
-            #         self.currentNode = self.targetNode = self.currentNode.neighbors[PORTAL]
-            #         self.targetIdx += 1
-            # else:
-            #     # Khi ghost không đứng yên
-            #     self.currentNode = self.targetNode
-
             self.currentNode = self.targetNode
             self.stepForward()
             self.setPosition()
-        
-    def render(self, screen):
-        super().render(screen=screen)
-
-        # adjust = Vector2(TILESIZE, TILESIZE)/2
-        # for i in range(len(self.path) - 1):
-        #     if self.path[i] is self.currentNode:
-        #         break
-        #     if self.path[i] is self.path[i + 1].neighbors[PORTAL]:
-        #         continue
-        #     line_start = (self.path[i].position+adjust).asTuple()
-        #     line_end = (self.path[i + 1].position+adjust).asTuple()
-        #     pygame.draw.line(screen, self.color, line_start, line_end, PATHSIZE)
-
-        # line_start = (self.currentNode.position+adjust).asTuple()
-        # line_end = (self.position+adjust).asTuple()
-        # pygame.draw.line(screen, self.color, line_start, line_end, PATHSIZE)
 
     def targetLost(self):
         if self.pacman.currentNode is not self.pacman.targetNode: # pacman di chuyển
@@ -111,6 +98,38 @@ class Ghost(Entity):
     def recalculatePath(self):
         pass
 
+    def scatter(self):
+        self.goal = Vector2()
+        # self.goal = self.pacman.position
+
+    def chase(self):
+        self.goal = self.pacman.position  
+
+    def spawn(self):
+        self.goal = self.spawnNode.position
+
+    def setSpawnNode(self, node):
+        self.spawnNode = node
+    
+    def startSpawn(self):
+        self.mode.setSpawnMode()
+        if self.mode.current == SPAWN:
+            self.setSpeed(150)
+            # self.directionMethod = self.goalDirection
+            self.spawn()
+
+    def startFreight(self):
+        self.mode.setFreightMode()
+        if self.mode.current == FREIGHT:
+            self.setSpeed(50)
+            # self.directionMethod = self.randomDirection         
+
+    def normalMode(self):
+        self.setSpeed(100)
+        # self.directionMethod = self.goalDirection
+        self.homeNode.denyAccess(DOWN, self)
+
     def reset(self):
         super().reset()
+        self.points = 200
         self.path.clear()
