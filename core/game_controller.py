@@ -177,6 +177,7 @@ class GameController(object):
                 if ghost.mode.current is FREIGHT:
                     self.pacman.hide()
                     ghost.hide()
+                    EATGHOSTMIXER.play()
                     self.updateScore(ghost.points)
                     self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
                     self.ghosts.updatePoints()
@@ -187,6 +188,7 @@ class GameController(object):
                 elif ghost.mode.current is not SPAWN:
                     if self.pacman.alive:
                         ghost.hide()
+                        PACMANDEATHMIXER.play()
                         self.pacman.die()#
                         self.lives -= 1
                         # if self.lives <= 0:
@@ -211,7 +213,10 @@ class GameController(object):
                     # self.ghosts.clyde.direction = LEFT
             pellet.hide()
             if pellet.name == POWERPELLET:
+                EATPOWERPELLETMIXER.play()
                 self.ghosts.startFreight()
+            else:
+                EATPELLETMIXER.play()
 
             if self.pellets.isEmpty():
                 self.pause.setPause(pauseTime=3, func=self.nextLevel)
@@ -298,10 +303,12 @@ class GameController(object):
             self.ghosts.hide()
             if self.mode == MODEINKY:
                 ghost = self.ghosts.inky
+                self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
             elif self.mode == MODEPINKY:
                 ghost = self.ghosts.pinky
             elif self.mode == MODECLYDE:
                 ghost = self.ghosts.clyde
+                self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
             elif self.mode == MODEBLINKY:
                 ghost = self.ghosts.blinky
 
