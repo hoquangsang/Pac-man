@@ -323,7 +323,6 @@ class GameController(object):
             self.startLevel()
             while self.running:
                 self.update()
-                self.searchTree = self.ghosts.pinky.searchTree
 
     def showEntities(self):
         self.pacman.show()
