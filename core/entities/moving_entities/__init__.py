@@ -1,9 +1,0 @@
-# from .moving_entity import MovingEntity
-# from .moving_entity import MovingEntity
-# from .pacmans.pacman import Pacman
-# from .ghosts.ghost import Ghost
-# from .ghosts.inky import Inky
-# from .ghosts.pinky import Pinky
-# from .ghosts.blinky import Blinky
-# from .ghosts.clyde import Clyde
-# from .ghosts.ghost_group import GhostGroup
