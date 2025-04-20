@@ -32,7 +32,7 @@ class PelletGroup(object):
         return np.loadtxt(textfile, dtype='<U1')
     
     def isEmpty(self):
-        return self.numEaten == len(self.pelletList)
+        return self.numEaten == len(self.pelletList) - 10
 
     def reset(self):
         for pellet in self.pelletList:

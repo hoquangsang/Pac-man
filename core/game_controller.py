@@ -50,6 +50,7 @@ class GameController(object):
         self.timer = 0.0
         self.textgroup = TextGroup()
         self.searchTree = None
+        self.lives = 5
         # self.searchTree: MazeGraph = None
 
     def update(self):
@@ -78,10 +79,8 @@ class GameController(object):
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
-        self.ghosts.render(self.screen)
-        self.pacman.render(self.screen)
 
-        if self.mode < MODEALL:
+        if self.mode <= MODEALL:
             self.maze.render(self.screen)
             if self.searchTree:
                 self.searchTree.render(self.screen)
@@ -89,11 +88,15 @@ class GameController(object):
                 self.textgroup.updatePeekMem(self.searchTree.peekMem)
         if self.mode == MODEPLAY:
             self.pellets.render(self.screen)
-
+        
+        self.ghosts.render(self.screen)
+        self.pacman.render(self.screen)
         self.textgroup.render(self.screen)
+
         pygame.display.update()
 
     def startLevel(self):
+        self.lives = 5
         self.running = True
         self.pause.paused = True
         self.setBackground()
@@ -172,42 +175,48 @@ class GameController(object):
        for ghost in self.ghosts:
             if self.pacman.collideGhost(ghost):
                 if ghost.mode.current is FREIGHT:
+                    self.pacman.hide()
                     ghost.hide()
+                    self.updateScore(ghost.points)
                     self.textgroup.addText(str(ghost.points), WHITE, ghost.position.x, ghost.position.y, 8, time=1)
                     self.ghosts.updatePoints()
-                    from functools import partial
-                    self.pause.setPause(pauseTime=1, func=partial(ghost.show))
+                    # from functools import partial
+                    self.pause.setPause(pauseTime=1, func=self.showEntities)
                     ghost.startSpawn()
                     # self.maze.allowHomeAccess(ghost)
                 elif ghost.mode.current is not SPAWN:
-                    ghost.hide()
                     if self.pacman.alive:
+                        ghost.hide()
                         self.pacman.die()
+                        self.lives -= 1
+                        # if self.lives <= 0:
+                        #     self.textgroup.showText(GAMEOVERTXT)
+                        #     self.pause.setPause(pauseTime=3, func=self.restartGame)
+                        # else:
+                        #     self.pause.setPause(pauseTime=3, func=self.resetLevel)
                         self.textgroup.showNotify(GAMEOVERTXT)
                         self.pause.setPause(pauseTime=3, func=self.endGame)
     
     def checkPelletEvents(self):
         pellet: Pellet = self.pacman.eatPellets(self.pellets.pelletList)
         if pellet:
-            pellet.hide()
             self.pellets.numEaten += 1
             self.updateScore(pellet.points)
-            
             if self.mode == MODEPLAY:
             #     if self.pellets.numEaten == 30:
             #         self.ghosts.inky.enableMovement()
             #     if self.pellets.numEaten == 70:
             #         self.ghosts.clyde.enableMovement()
                 pass
-            
+            pellet.hide()
             if pellet.name == POWERPELLET:
                 self.ghosts.startFreight()
-            
+
             if self.pellets.isEmpty():
+                self.pause.setPause(pauseTime=3, func=self.nextLevel)
                 pass
                 # self.flashBG = True
                 # self.hideEntities()
-                # self.pause.setPause(pauseTime=3, func=self.nextLevel)
 
     def updateScore(self, points):
         self.score += points
@@ -271,8 +280,8 @@ class GameController(object):
             self.textgroup.showText(SCORETXT)
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
-            self.ghosts.inky.disableMovement()
-            self.ghosts.clyde.disableMovement()
+            # self.ghosts.inky.disableMovement()
+            # self.ghosts.clyde.disableMovement()
         elif self.mode == MODEALL:
             self.pellets.hide()
             self.textgroup.hideText(SCORETXT)
@@ -314,4 +323,13 @@ class GameController(object):
             self.startLevel()
             while self.running:
                 self.update()
+                self.searchTree = self.ghosts.pinky.searchTree
 
+    def showEntities(self):
+        self.pacman.show()
+        self.ghosts.show()
+
+    def hideEntities(self):
+        self.pacman.hide()
+        self.ghosts.hide()
+        

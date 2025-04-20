@@ -22,7 +22,7 @@ class Ghost(MovingEntity):
         self.goalNode: MazeNode = self.pacman.currentNode if self.pacman else None
         self.nextGoalNode: MazeNode = self.pacman.targetNode if self.pacman else None
         self.peakMem = 0
-        self.disablePortal = True
+        self.disablePortal = False
         self.mode = ModeController(self)
         self.homeNode: MazeNode = node
         # self.recontructPath()
@@ -30,13 +30,13 @@ class Ghost(MovingEntity):
     def update(self, dt):
         if not self.visible or not self.moveable: return
 
+        self.sprites.update(dt)
+
         self.mode.update(dt)
         if self.mode.current is CHASE:
             self.chase()
         elif self.mode.current is SCATTER:
             self.scatter()
-
-        self.sprites.update(dt)
 
         self.position += self.directions[self.direction] * self.speed * dt
 
@@ -59,19 +59,27 @@ class Ghost(MovingEntity):
         # if not self.pacman: return
         # self.goalNode = self.pacman.targetNode
         self.recalculatePath()
-        if self.currentNode is self.targetNode:
-            self.targetIdx = -1  # new target = path[1]
-        else:
-            self.targetIdx = 0 # new target = path[0]
+
+        if self.targetNode is self.path[0]:
+            self.targetIdx = -1
+        elif self.currentNode is self.path[0]:
+            self.targetIdx = 0
+        # if self.currentNode is self.targetNode:
+        #     self.targetIdx = -1  # new target = path[1]
+        # else:
+        #     self.targetIdx = 0 # new target = path[0]
         
         self.stepForward()
 
     def stepForward(self):
         if not self.disablePortal:
             portalNode = self.currentNode.neighbors[PORTAL]
-            if portalNode is not None and portalNode in self.path:
+            if portalNode and portalNode in self.path:
                 self.targetIdx += 1
                 self.currentNode = self.targetNode = self.currentNode.neighbors[PORTAL]
+        # else:
+            # self.reconstructPath()
+            # return
 
         newTarget = self.peekNextNode()
         if newTarget:
@@ -118,7 +126,7 @@ class Ghost(MovingEntity):
         # self.goal = self.spawnNode.position
 
     def freight(self):
-        # self.goalNode = self.nextGoalNode = self.scatterNode
+        self.goalNode = self.nextGoalNode = self.scatterNode
         pass
 
     def setSpawnNode(self, node:MazeNode):
@@ -145,9 +153,9 @@ class Ghost(MovingEntity):
 
     def normalMode(self):
         self.setSpeed(100)
-        # self.directionMethod = self.goalDirection
-        # self.homeNode.denyAccess(DOWN, self)
-        # self.reconstructPath()
+        self.goalNode = self.pacman.currentNode if self.pacman else None
+        self.nextGoalNode = self.pacman.targetNode if self.pacman else None
+        self.reconstructPath()
 
     def reset(self):
         super().reset()
