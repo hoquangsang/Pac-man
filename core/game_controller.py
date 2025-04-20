@@ -203,11 +203,12 @@ class GameController(object):
             self.pellets.numEaten += 1
             self.updateScore(pellet.points)
             if self.mode == MODEPLAY:
-            #     if self.pellets.numEaten == 30:
-            #         self.ghosts.inky.enableMovement()
-            #     if self.pellets.numEaten == 70:
-            #         self.ghosts.clyde.enableMovement()
-                pass
+                if self.pellets.numEaten == 30:
+                    self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
+                    # self.ghosts.inky.direction = RIGHT
+                elif self.pellets.numEaten == 70:
+                    self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
+                    # self.ghosts.clyde.direction = LEFT
             pellet.hide()
             if pellet.name == POWERPELLET:
                 self.ghosts.startFreight()
@@ -280,6 +281,8 @@ class GameController(object):
             self.textgroup.showText(SCORETXT)
             self.textgroup.hideText(MEMORYTXT)
             self.textgroup.hideText(EXPANDEDTXT)
+            self.ghosts.inky.startNode.denyAccess(RIGHT, self.ghosts.inky)
+            self.ghosts.clyde.startNode.denyAccess(LEFT, self.ghosts.clyde)
             # self.ghosts.inky.disableMovement()
             # self.ghosts.clyde.disableMovement()
         elif self.mode == MODEALL:

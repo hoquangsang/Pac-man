@@ -12,7 +12,7 @@ class GhostGroup(object):
         self.pinky = Pinky(node, pacman)
         self.inky = Inky(node, pacman)
         self.clyde = Clyde(node, pacman)
-        self.ghosts: list[Ghost] = [self.blinky,self.pinky,self.clyde,self.inky]
+        self.ghosts: list[Ghost] = [self.blinky,self.pinky,self.inky,self.clyde]
         
     def __iter__(self):
         return iter(self.ghosts)
